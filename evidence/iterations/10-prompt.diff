@@ -1,0 +1,31 @@
+--- 09-prompt.yml
++++ 10-prompt.yml
+@@ -34,8 +34,15 @@
+     - Preserve plataformas, endpoints, estados, condições de reprodução, valores,
+       unidades, limites e impactos relevantes informados. Não transforme sintomas
+       ou hipóteses em causas comprovadas.
++    - Preserve os nomes dos estados e descreva explicitamente a transição esperada.
++      Quando o webhook confirmar um pagamento aprovado, descreva a transição do
++      pedido de "pendente" para "aprovado"; não substitua "aprovado" por "pago".
++      O sucesso HTTP da requisição, sozinho, não comprova a aprovação do pagamento.
+     - Não invente fatos, tecnologias em uso, SLAs, percentuais, prazos ou regras
+       de negócio. Diferencie dados observados de requisitos propostos.
++    - Evite acrescentar requisitos técnicos ou regras de negócio sem suporte no
++      relato. Não inclua mecanismos como idempotência ou retries automaticamente;
++      só os inclua quando houver evidências no relato de que são necessários à correção.
+     - Pode propor comportamentos diretamente necessários à correção, como feedback
+       de sucesso/erro, validação de entrada e preservação de dados. Não acrescente
+       funcionalidades sem relação com o problema.
+@@ -81,8 +88,10 @@
+       de navegador, orientação ou tamanho de tela informadas.
+     - Validação e acesso: entrada inválida ou ação sem permissão é bloqueada com
+       retorno claro; o fluxo válido/autorizado continua funcionando.
+-    - Integração e concorrência: consistência entre os sistemas, ausência de efeitos
+-      duplicados, respeito a limites e tratamento de erro ou repetição da operação.
++    - Integração e concorrência: consistência entre os sistemas e transições de estado
++      sustentadas pelo relato. Inclua ausência de efeitos duplicados, respeito a
++      limites e tratamento de erro ou repetição somente quando o problema relatado
++      exigir esses comportamentos.
+     - Desempenho: volume e limite informados, resposta da interface e ausência de
+       timeout ou esgotamento de recursos. Se faltar uma meta quantitativa necessária,
+       peça sua definição; não invente um número.

@@ -1,0 +1,34 @@
+--- 10-prompt.yml
++++ 11-prompt.yml
+@@ -51,6 +51,10 @@
+     - Em cálculos, confira a aritmética e explicite a regra e o resultado esperado
+       quando forem dedutíveis do relato. Havendo contradição, registre-a em
+       "Informações a confirmar"; não escolha silenciosamente um valor como verdade.
++    - Em divergências de contagem, formule critérios para o total real de registros
++      que atendem ao filtro informado, não apenas para os números do exemplo.
++      Para usuários ativos, explicite que somente usuários com status "ativo"
++      entram na contagem.
+     - Não repita senhas, tokens ou dados pessoais identificáveis presentes em logs;
+       use [DADO SENSÍVEL OMITIDO], preservando o contexto técnico necessário.
+     - Não transfira nomes, números ou soluções dos exemplos para o caso recebido.
+@@ -72,6 +76,9 @@
+       seções técnicas ou perguntas quando elas não forem necessárias.
+     - Bug com detalhes técnicos: inclua "## Contexto Técnico" com as evidências
+       relevantes. Use "## Sugestões Técnicas a Validar" somente quando agregar valor.
++    - Quando o relato informar causas técnicas e sintomas, inclua-os em
++      "## Contexto Técnico", preservando plataforma, volume afetado, duração do
++      travamento e thread envolvida.
+     - Múltiplas falhas relacionadas: crie uma User Story principal e agrupe os
+       cenários em subtítulos por problema. Cubra todos os problemas relatados,
+       incluindo caminhos de falha e recuperação, sem repetir a história principal.
+@@ -95,6 +102,10 @@
+     - Desempenho: volume e limite informados, resposta da interface e ausência de
+       timeout ou esgotamento de recursos. Se faltar uma meta quantitativa necessária,
+       peça sua definição; não invente um número.
++    - Para listas com travamento, descreva separadamente o carregamento fora da
++      thread principal, a ausência de congelamento e ANR, e o carregamento
++      incremental durante a rolagem. Evite alternativas vagas como
++      "paginação ou lazy loading".
+     - Sincronização: preservação de dados, ordem das operações, conflitos explícitos,
+       retomada após falha e status que corresponda ao resultado real.
+     Estes são aspectos a considerar, não seções obrigatórias para todos os relatos.

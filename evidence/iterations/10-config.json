@@ -1,0 +1,55 @@
+{
+  "provider": "openai",
+  "generation_model": "gpt-5-nano",
+  "evaluation_model": "gpt-5-nano",
+  "effective_request_options": {
+    "generation": {
+      "model": "gpt-5-nano"
+    },
+    "judge": {
+      "model": "gpt-5-nano"
+    }
+  },
+  "max_concurrency": 1,
+  "num_repetitions": 1,
+  "dataset_id": "c1682d26-9084-49a1-a63e-78a3a9efc490",
+  "dataset_name": "mba-ia-pull-evaluation-prompt-eval",
+  "entrypoint": "venv/bin/python -u src/evaluate.py",
+  "packages": {
+    "langsmith": "0.13.0",
+    "langchain-core": "1.6.4",
+    "langchain-openai": "1.6.2",
+    "openai": "3.35.1"
+  },
+  "source_sha256": {
+    "src/evaluate.py": "fba51aa7d8ad0545f2c830aef92e8632de37cf77bb306f33a056e7071d883b57",
+    "src/metrics.py": "aee4e4704c9c6b6caba33dd0b3f6e0612fa341d642d2f3d4a4e9a2c641fc1ead",
+    "src/utils.py": "7a3bcef867506828b6ef45e71105f57a42acf8f39fcaa670d286b133fbbecdf5",
+    "requirements.txt": "9ded17274b1bfb91eaa03992e3eeed9deb3e2e87bf800b43589cc37af790988d",
+    "datasets/bug_to_user_story.jsonl": "4b1ef15e41437f7823daae6f0cef92a7ba16b19352d4d3b36a1bbc69db48f60b"
+  },
+  "baseline_experiment": "lailson-bug_to_user_story_v2-607f7488",
+  "baseline_experiment_id": "e7039d2f-286d-47e0-a61f-1236bf8542a7",
+  "published_prompt_commit": "c7474269af12399be238bc1fffe3f3c64478d2038a53c4321f481bc73da3d518",
+  "prompt_snapshot_sha256": "5f426777d43cb4cf3c0ce4302659310ceb13cd0507dfb562ae02eb69e6e812cf",
+  "changes": [
+    "Preservar transição pendente → aprovado na confirmação de pagamento pelo webhook.",
+    "Evitar idempotência e retries sem suporte no relato.",
+    "Condicionar cobertura de integração e concorrência ao problema relatado."
+  ],
+  "original_evaluation_entrypoint_used": true,
+  "later_iteration_adapters_used": false,
+  "experiment": "lailson-bug_to_user_story_v2-ae1af199",
+  "experiment_id": "81235e0f-3a73-45a9-8170-7eed8fcf1cc4",
+  "verified_runtime_configuration": {
+    "llm_model": "gpt-5-nano",
+    "eval_model": "gpt-5-nano",
+    "provider": "openai",
+    "dataset_version": "2026-10-18T04:36:36.991545+00:00",
+    "num_repetitions": 1
+  },
+  "runtime_experiment_configuration_identical_to_09": true,
+  "generator_invocation_params_identical_to_09": true,
+  "judge_invocation_params_identical_to_09": true,
+  "published_prompt_messages_match_snapshot": true
+}

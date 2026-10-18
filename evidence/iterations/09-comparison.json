@@ -1,0 +1,711 @@
+{
+  "source_experiment": "lailson-bug_to_user_story_v2-b7d65a6c",
+  "repeat_experiment": "lailson-bug_to_user_story_v2-607f7488",
+  "examples": [
+    {
+      "example_id": "ce7b5398-359d-4fe3-88de-f4f9c0697dda",
+      "inputs": {
+        "bug_report": "App Android trava ao carregar lista de notificações com mais de 50 itens.\n\nObservações:\n- Tela fica congelada por 5-10 segundos\n- ANR (Application Not Responding) em alguns casos\n- Lista não está usando paginação\n- Carrega tudo de uma vez na Thread principal"
+      },
+      "scores_01": {
+        "helpfulness": 0.815,
+        "correctness": 0.9266,
+        "f1_score": 0.9333,
+        "clarity": 0.71,
+        "precision": 0.92
+      },
+      "scores_09": {
+        "helpfulness": 0.825,
+        "correctness": 0.9275,
+        "f1_score": 0.955,
+        "clarity": 0.75,
+        "precision": 0.9
+      },
+      "delta": {
+        "helpfulness": 0.01,
+        "correctness": 0.0009,
+        "f1_score": 0.0217,
+        "clarity": 0.04,
+        "precision": -0.02
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo usuário de Android, eu quero que a lista de notificações seja carregada de forma paginada e em thread de background, para que a tela permaneça responsiva e não trave ou gere ANR, mesmo com listas contendo mais de 50 itens.\n\n## Critérios de Aceitação\n\n### Carregamento assíncrono com paginação\n- Dado que a lista de notificações contém mais de 50 itens\n- Quando a tela de notificações é aberta\n- Então as notificações são carregadas em blocos/páginas (por exemplo, 20 itens por página)\n- E o carregamento ocorre na thread de background\n- Então a interface permanece responsiva, sem travamento perceptível nem ANR\n- E é exibido feedback de carregamento enquanto carrega\n- E as notificações aparecem na lista conforme cada bloco é carregado\n\n### Continuidade de uso com carregamento incremental\n- Dado que o usuário rola até o fim da lista\n- Quando novos itens são carregados\n- Então as novas notificações são adicionadas à lista existente sem bloquear a UI\n- E o estado da tela permanece disponível para interação (scroll, abertura de itens, etc.)\n\n### Falha no carregamento e recuperação\n- Dado que ocorre uma falha durante o carregamento\n- Quando a falha acontece\n- Então a interface informa o erro de forma clara e oferece opção de tentar novamente\n- E o estado da lista já carregada (se houver) é preservado\n- E ao tentar novamente, o carregamento prossegue normalmente\n\n## Contexto Técnico\n- Observação: a lista de notificações com mais de 50 itens está sendo carregada de tudo de uma vez na Thread principal, resultando em congelamento e ANR em alguns casos\n- Atual comportamento atual não utiliza paginação\n\n## Sugestões Técnicas a Validar\n- Implementar paginação ou carregamento incremental (lazy loading) para a lista de notificações\n- Mover o carregamento para thread de background/execução assíncrona para evitar bloqueio da UI\n- Usar feedback visual de carregamento (placeholders/skeleton) e atualizar a lista conforme blocos são carregados\n- Preservar o estado da lista entre tentativas e recargas\n- Garantir que a rolagem dispare apenas carregamento adicional quando necessário, evitando chamadas desnecessárias ou concorrência na requisição de dados"
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo usuário do aplicativo Android, eu quero que a lista de notificações seja carregada de forma paginada e em background, para que eu possa navegar pela lista sem travamentos, sem ANR, mesmo quando houver mais de 50 itens.\n\n## Critérios de Aceitação\n### Carregamento inicial\n- Dado que a tela de notificações contém mais de 50 itens\n- Quando a tela é aberta\n- Então o carregamento é iniciado em uma thread de background\n- E a interface exibe um indicador de carregamento\n- E as primeiras notificações aparecem sem travamento perceptível da UI\n\n### Paginação / Carregamento sob demanda\n- Dado que as notificações foram carregadas em tela com mais de 50 itens\n- Quando o usuário rola até o fim ou aciona o carregamento adicional\n- Então as notificações seguintes são carregadas em background\n- E a lista é atualizada incrementalm ente sem travar a interface\n\n### Conformidade com ANR\n- Dado que a lista contém mais de 50 itens\n- Quando a tela é aberta\n- Então não ocorre ANR e a tela permanece interativa durante o carregamento\n\n## Contexto Técnico\n- Observado: carregamento de toda a lista de notificações de uma vez na Thread principal, com congelamento de 5-10 segundos e ANR em alguns casos\n- Observado: a lista não está paginada\n\n## Sugestões Técnicas a Validar\n- Implementar paginação ou lazy loading para notificações\n- Mover o carregamento de dados para thread de background (ou use mechanismas apropriadas de concorrência)\n- Exibir placeholders ou skeleton durante o carregamento para manter a percepção de performance\n- Garantir que o carregamento inicial e subsequentes não bloqueiem a UI durante a rolagem"
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta gerada alinha-se fortemente com a Ground Truth: inclui a user story, critérios de aceitação (mais de 50 itens, carregamento em background, paginação ~20 itens, scroll infinito, sem ANR/travamento) e critérios técnicos (paginação, background, infinite scroll). Também aborda tratamento de falhas e preservação de estado, além de sugestões técnicas. O(s) ponto(s) ausente(s) são: a exigência explícita de < 2 segundos (tempo de carregamento) e a menção explícita de RecyclerView com ViewHolder nos critérios de aceitação. Não há informações incorretas aparentes; há itens adicionais alinhados às sugestões.",
+        "clarity": "A avaliação reconhece uma organização clara: há seções de User Story, Critérios de Aceitação e Contexto Técnico. A linguagem é direta e usa termos técnicos, com a explicação de ANR já definida. No entanto, a resposta é prolixa, com repetição e marcação de cabeçalhos (##) que podem atrapalhar a leitura em ambientes sem renderizador de Markdown. A clareza é boa para entender o que fazer (paginação, carregamento em background, feedback), mas reduz a concisão por conteúdo duplicado e sugestões técnicas redundantes. Recomenda-se eliminar duplicação, simplificar a estrutura e manter o essencial para orientar a implementação.",
+        "precision": "Resultado muito próximo da ground truth: a resposta propõe paginação, carregamento em background, carregamento incremental e tratamento de falhas, alinhando-se com o problema descrito. Não há afirmações factualmente incorretas ou inventadas. Pontos de divergência: não especifica o tempo-alvo de carregamento (2 segundos) nem menciona explicitamente arquitetura como RecyclerView/ViewHolder ou scroll infinito, embora cubra a lógica de carregar blocos conforme rolagem. Em geral, alta precisão com leve omissão de métricas e detalhes de implementação."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta gerada é amplamente consistente com a Ground Truth: cobre a visão do usuário, critérios de aceitação (mais de 50 itens, abrir tela, carregamento em background, indicador, evitar travamento/ANR) e critérios técnicos (paginação, carregamento em background, scroll infinito). O texto omite explicitamente o objetivo de carregar em menos de 2 segundos, o detalhe de 20 itens por página e o uso específico de RecyclerView com ViewHolder, o que reduz ligeiramente a recall. A precisão permanece alta pois não há afirmações incorretas; a maior parte das informações está correta e relevante.",
+        "clarity": "Organização: boa estrutura (User Story, Critérios, Contexto Técnico, Sugestões), mas inclui a seção 'RESPOSTA ESPERADA', o que pode confundir. Linguagem: clara em PT; usa siglas como ANR sem explicação; há um pequeno erro de digitação ('incrementalm ente'). Ausência de Ambiguidade: mensagens são compreensíveis, porém falta um critério temporal específico (ex.: tempo de carregamento) nos critérios. Concisão: o texto é relativamente longo e repetitivo; poderia ser mais objetivo mantendo o foco técnico. Média: 0.75.",
+        "precision": "A resposta está bastante alinhada com o objetivo de evitar travamentos ao carregar notificações, incluindo carregamento em background, paginação/scroll infinito, uso de RecyclerView e placeholders para manter a percepção de performance, além de abordar ANR. Mantém foco no problema técnico (carregar tudo na thread principal) e sugere melhorias relevantes. Falhas: não especifica explicitamente o tamanho da paginação (20 itens por vez) nem fixa o tempo alvo de carregamento (<2 segundos), conforme a referência. Em geral, alta precisão com uma omissão pontual de detalhe técnico específico."
+      }
+    },
+    {
+      "example_id": "cd825896-52b9-46b0-bb3f-d0b592cc63de",
+      "inputs": {
+        "bug_report": "App de produtividade offline-first com bugs críticos de sincronização.\n\nCONTEXTO:\nApp mobile (iOS + Android) que funciona offline e sincroniza quando tem internet.\nUsuários: vendedores em campo, muitas vezes sem conexão.\n\nPROBLEMAS REPORTADOS:\n\n1. CONFLITO DE DADOS - Merge incorreto causa perda de dados:\n\n   Cenário:\n   - Usuário A (offline) edita tarefa #123: \"Ligar para cliente X às 14h\"\n   - Usuário B (offline) edita mesma tarefa: \"Ligar para cliente X às 15h (reagendado)\"\n   - Ambos sincronizam\n   - Sistema aplica \"last write wins\" → dados do usuário A perdidos\n   - Usuário A não sabe que seu agendamento foi sobrescrito\n\n   Impacto: 30+ casos de compromissos perdidos na última semana\n\n2. SINCRONIZAÇÃO - Upload infinito de anexos grandes:\n\n   Cenário:\n   - Usuário anexa PDF de 50MB em uma tarefa\n   - Inicia upload via 4G\n   - Conexão cai no meio (sinal fraco)\n   - App reinicia upload do zero (não retoma)\n   - Após 5 tentativas, desiste mas não avisa o usuário\n   - Tarefa fica \"sincronizada\" mas sem anexo\n\n   Logs:\n   ```\n   [SYNC] Uploading attachment.pdf (50MB)... 40% complete\n   [NETWORK] Connection lost\n   [SYNC] Retry 1/5 - Restarting from 0%\n   [SYNC] Uploading attachment.pdf (50MB)... 35% complete\n   [NETWORK] Connection lost\n   [SYNC] Retry 2/5 - Restarting from 0%\n   ...\n   [SYNC] Max retries exceeded. Giving up.\n   [ERROR] Upload failed but status marked as synced\n   ```\n\n3. ORDENAÇÃO - Operações aplicadas fora de ordem no servidor:\n\n   Cenário offline (usuário sem internet por 2 horas):\n   - 10:00 - Cria tarefa \"Tarefa A\"\n   - 10:15 - Edita \"Tarefa A\" → \"Tarefa A - Urgente\"\n   - 10:30 - Deleta \"Tarefa A\"\n\n   Ao sincronizar:\n   - Servidor recebe DELETE antes do CREATE (ordem errada)\n   - Tenta deletar tarefa que não existe → erro 404\n   - CREATE e UPDATE são aplicados depois\n   - Resultado: tarefa existe (deveria estar deletada)\n   - Timestamp client-side não é respeitado\n\n4. MEMÓRIA - App crasha ao sincronizar 1000+ itens pendentes:\n\n   Cenário:\n   - Usuário fica 1 semana offline\n   - Acumula 1.500 operações pendentes (create, update, delete)\n   - Volta para área com WiFi\n   - App tenta sincronizar tudo de uma vez\n   - Carrega todos os 1.500 itens na memória\n   - iOS: Memory Warning → App crashado pelo OS\n   - Android: OutOfMemoryError\n\n   Memória medida: 850MB (limite iOS: 700MB)\n\nIMPACTO:\n- 250+ usuários afetados\n- NPS caiu de 8.5 para 4.2\n- 80% dos reviews negativos mencionam \"perda de dados\"\n- Churn rate aumentou 15% no último mês\n- Time de vendas perdeu R$ 200k em oportunidades por dados perdidos"
+      },
+      "scores_01": {
+        "helpfulness": 0.89,
+        "correctness": 0.7943,
+        "f1_score": 0.5885,
+        "clarity": 0.78,
+        "precision": 1.0
+      },
+      "scores_09": {
+        "helpfulness": 0.855,
+        "correctness": 0.79,
+        "f1_score": 0.63,
+        "clarity": 0.76,
+        "precision": 0.95
+      },
+      "delta": {
+        "helpfulness": -0.035,
+        "correctness": -0.0043,
+        "f1_score": 0.0415,
+        "clarity": -0.02,
+        "precision": -0.05
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo vendedor em campo, eu quero que a sincronização offline-first seja confiável e previsível, para que minhas tarefas, atualizações e anexos sejam corretamente sincronizados ao retornar a conectividade, sem perda de dados, sem falhas de memória e com ordem de operações consistente no servidor.\n\n## Critérios de Aceitação\n\n### Conflito de Dados (Merge)\n- Dado que dois usuários offline editam a mesma tarefa #123 com alterações diferentes\n- Quando ambos sincronizam\n- Então o sistema deve aplicar uma estratégia de resolução de conflitos que preserve as alterações de ambas as partes ou permita que o usuário escolha entre as mudanças, evitando perda de dados\n- E deve manter um histórico de alterações e notificar o usuário sobre o conflito e a ação tomada\n\n### Sincronização de Anexos Grandes\n- Dado que um anexo de 50MB é criado em uma tarefa e o upload é feito via rede móvel\n- Quando a conexão cai durante o upload\n- Então o upload deve ser retomável (ou dividido em chunks) sem recomeçar do zero e não deve marcar a tarefa como sincronizada até que o anexo esteja completamente carregado\n- E o usuário deve ser informado sobre o progresso, tentativas e status final (sucesso/falha); se falhar, deve haver retry controlado e notificação\n- Observável: a tarefa só aparece como sincronizada após o envio bem-sucedido do anexo; casos de falha devem ficar visíveis para o usuário\n\n### Ordem de Operações no Servidor\n- Dado que há uma sequência offline de ações na tarefa A (CREATE, UPDATE, DELETE)\n- Quando a sincronização ocorre\n- Então o servidor deve aplicar as operações na ordem correta de geração (ou por meio de reconciliação com uma fila/SEQ) para que o estado final reflita a intenção do usuário (a tarefa é deletada)\n- Não deve ocorrer erro 404 causado por ordens fora de sequência\n- O timestamp do cliente não deve ser a única fonte de verdade; deve-se usar uma ordem de operações confiável\n\n### Memória - Crashes com grandes pendentes\n- Dado que há 1.500 operações pendentes acumuladas offline\n- Quando a sincronização é iniciada com todas as pendências\n- Então o sincronizador deve processar em lotes menores, controlando o uso de memória, evitando crash do dispositivo\n- E apresentar progresso para o usuário, com estimativas de throughput e tempo restante\n- E, em caso de limitação de memória, deve pausar e retomar de forma segura sem perder operações já aplicadas\n\n## Impacto\n- 250+ usuários afetados\n- NPS caiu de 8.5 para 4.2\n- 80% dos reviews negativos mencionam \"perda de dados\"\n- Churn rate aumentou 15% no último mês\n- Time de vendas perdeu R$ 200k em oportunidades por dados perdidos\n\n## Contexto Técnico\n- App mobile offline-first com sincronização quando online\n- Cenários descritos: conflito de dados com last-write-wins atual e problemas de anexos grandes, ordenação de operações fora de ordem, e estouro de memória com 1.500 itens pendentes\n- Observações de logs:\n  - [SYNC] Uploading attachment.pdf (50MB)... 40% complete; [NETWORK] Connection lost; Retry; [ERROR] Upload failed but status marked as synced\n  - Não respeitado design de ordem de operações no servidor; timestamp client-side não é garantido; comportamento de memória alto\n\n## Sugestões Técnicas a Validar\n- Explorar estratégias de resolução de conflitos que mantenham mudanças de todos os usuários (merge com conflitos sinalizados ou CRDT/OT)\n- Implementar uploads de anexos com retomada/ chunking e não marcar sincronização até conclusão; apresentar progresso e falha\n- Garantir processamento de operações offline em uma fila determinística com referências de sequência para evitar 404 por ordem\n- Implementar sincronização em lotes com limite de memória e mecanismo de streaming para evitar OOM\n- Validar políticas de memória por plataforma, limites de uso de memória, e comunicação de status ao usuário\n\n## Informações a confirmar\n- Qual deve ser a política de resolução de conflitos: mesclar automaticamente, ou permitir que o usuário resolva conflitos em uma UI dedicada?\n- Existem limites de tamanho de anexos ou requisitos de conectividade (padrões mínimo de banda) que devam aplicar regra de skip/suspensão?\n- Devemos manter apenas operações mais recentes para cada tarefa, ou manter todas as alterações com histórico de conflitos?"
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo vendedor em campo, eu quero uma sincronização offline-first confiável entre dispositivos móveis (iOS e Android) e o servidor, que preserve dados, trate conflitos de forma segura, gerencie anexos grandes sem falhas, mantenha a ordem das operações e evite crashes por uso excessivo de memória, para que eu possa trabalhar offline com confiança e ter dados consistentes ao reconectar.\n\n## Critérios de Aceitação\n### Conflito de dados (Concorrência de edição offline)\n- Dado que dois dispositivos offline editam a mesma tarefa #123 com alterações distintas\n- Quando sincronizam\n- Então o sistema não deve sobrescrever automaticamente com a última edição; deve acionar uma resolução de conflitos que preserve as alterações locais ou permita escolha pelo usuário, registrando o conflito para auditoria\n- E a edição resultante deve refletir a resolução acordada, sem perda de dados\n\n### Sincronização - Upload de anexos grandes\n- Dado que eu anexei um PDF de 50MB em uma tarefa\n- Quando inicio o upload via 4G e a conexão cai durante o envio\n- Então o upload deve retomar de onde parou (resume) ao restabelecer conexão, não reiniciando do zero\n- E, se exceder o número máximo de tentativas, o usuário deve ser notificado com opção de re-tentar e a tarefa não deve ser marcada como sincronizada até o upload do anexo estar completo\n- E o log de progresso deve refletir o status atual de cada tentativa e do progresso real\n\n### Ordem de operações - Operações aplicadas fora de ordem no servidor\n- Dado offline (2 horas sem internet) com 10:00 criar tarefa A, 10:15 editar para \"Tarefa A - Urgente\" e 10:30 deletar \"Tarefa A\"\n- Quando sincronizam\n- Então o servidor deve aplicar as operações em uma ordem consistente (em especial não retornar 404 para deleção de itens criados localmente) e o estado final deve refletir a sequência adequada de ações (ex.: a deleção final deve resultar na ausência da tarefa)\n- E a semântica de deleção de itens criados localmente deve ser mantida de forma previsível entre cliente e servidor\n\n### Memória - Crashes ao sincronizar muitos itens pendentes\n- Dado que o usuário ficou offline por 1 semana acumulando aproximadamente 1.500 operações pendentes\n- Quando retorna online e inicia a sincronização\n- Então o sistema deve processar as operações em lotes, limitando o uso de memória (por exemplo, processando em blocos) para manter o consumo abaixo dos limites do dispositivo (ex.: memória não deve exceder 700MB no iOS)\n- E a sincronização deve continuar estável sem crashes, com feedback de progresso ao usuário e sem bloquear a aplicação\n- E, se ocorrer falha parcial, o sistema deve retomar de onde parou ou re-tentar de forma segmentada sem perder dados\n\n## Impacto\n- 250+ usuários afetados\n- NPS caiu de 8.5 para 4.2\n- 80% dos reviews negativos mencionam \"perda de dados\"\n- Churn rate aumentou 15% no último mês\n- Time de vendas perdeu R$ 200k em oportunidades por dados perdidos\n\n## Contexto Técnico\n- App mobile offline-first; sincroniza quando há conexão\n- Cenários de uso envolvem vendedores em campo com conectividade intermitente\n- Logs de referência para anexos indicam falha de upload com reinícios de 0% a 40%/35% e mensagens de “Max retries exceeded. Giving up.”\n\n## Sugestões Técnicas a Validar\n- Implementar resolução de conflitos determinística (ou mesclagem não destrutiva com resolução pelo usuário) para edições simultâneas offline\n- Tornar uploads de anexos resumíveis e resilientes: suporte a resume, backoff exponencial, retries por arquivo, e não marcar tarefa como sincronizada até o anexo estar completo\n- Garantir ordem de aplicação de operações no servidor por meio de fila de eventos por cliente (ou CRDT/OT com histórico de operações) para evitar estados inconsistentes (p.ex., DELETE antes de CREATE)\n- Processar sincronização em lotes (tamanho configurável) para evitar picos de memória; manter processamento incremental com monitoramento de memória\n- Instrumentar logs de sincronização, métricas de sucesso/erro e auditoria de conflitos para reduzir churn e facilitar diagnóstico\n\n## Informações a confirmar\n- Quais políticas de resolução de conflitos devem prevalecer (mesclagem automática vs. resolução pelo usuário)? Existem diretrizes de UX para conflitos?\n- Qual é o tamanho máximo típico de anexos e o comportamento esperado para anexos maiores que esse limite?\n- Existe uma estratégia específica de versionamento ou de IDs de conflito a ser usada (vector clocks, IDs de operações, etc.)?\n- Qual é o alvo de memória permitido durante a sincronização em iOS e Android, e há margens para picos temporários?"
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta cobre a User Story e critérios centrais A, B e parcialmente C (resolução de conflitos, upload retomável, e ordem com timestamp). Entretanto, falha em vários requisitos do Ground Truth: não especifica claramente a cópia de backup da versão conflitante, não fixa 5 tentativas de retry no upload, não descreve o processamento em lotes de 50 itens com limite de memória, nem detalha CRDT/Vector clocks explicitamente, além de não mencionar métricas, fases ou UI de progresso com precisão.",
+        "clarity": "Avaliando a clareza: a resposta está bem organizada, com User Story, Critérios de Aceitação (A–D) e seções técnicas bem demarcadas, facilitando o entendimento. A linguagem é direta e usa termos técnicos relevantes sem excessiva jargão. Os cenários críticos são bem descritos e as expectativas de comportamento são explícitas, o que reduz ambiguidades. Pontos de melhoria: o texto é longo e há duplicações (Informações a confirmar, sugestões técnicas) que podem confundir; consolidar essas partes e separar claramente decisões de alto nível da implementação ajudaria a aumentar a concisão sem perder detalhes.",
+        "precision": "A resposta está alinhada com a ground truth fornecida: reproduz a User Story principal e os critérios A-D (conflitos com backup e escolha manual, upload com checkpoints e retomada, ordenação por client_timestamp com operações atômicas, processamento em lotes com limite de memória). Não apresenta afirmações não verificáveis nem introduz informações fora do contexto; foca exatamente nas questões de conflito, anexos grandes, ordem de operações e OOM, sem exageros ou dados não suportados."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A avaliação registra que a resposta cobra resolução de conflitos com opção de usuário (parcialmente correta: não menciona backup da versão conflitante nem notificação aos usuários). B e C estão cobertos integralmente. D não é abordado (sync em lote/limite de memória). Assim, A recebe ~0.5, B e C=1.0, D=0.0; média (0.5+1+1+0)/4 ≈ 0.625 → 0.63 para ambas métricas, com omissão de critérios críticos de A (backup/notificações) e D (lotes/memória).",
+        "clarity": "Organização: ótima, com seções claras (User Story, critérios, técnico, memória, métricas). Linguagem: direta em PT, sem jargões excessivos; termos técnicos aparecem porém são compreensíveis no contexto. Ausência de ambiguidade: em geral o conteúdo é explícito quanto a cenários, critérios e fluxo de correção. Concisão: o texto é longo e repetitivo em alguns pontos (duplicação/variação de formatação) o que reduz a concisão; poderia sintetizar duplicadas. Nota geral: a clareza é boa e fácil de seguir, mas há espaço para condensar itens, padronizar formatação e eliminar redundâncias para melhorar ritmo de leitura.",
+        "precision": "A avaliação indica alta precisão: a resposta reproduz a User Story principal e os Critérios de Aceitação alinhados ao Ground Truth (conflitos com backup, upload resiliente, ordem de operações e sincronização em lotes com progresso). Observa-se divergence menor: (i) o item B não especifica checkpoints a cada 5MB, limitando-se a retomar ao reconectar; (ii) a métrica de memória em D menciona 400MB em vez de 500MB (e há menções de 700–850MB em outras partes). São omissões/nuances, não alucinações, mantendo excelente correspondência com o Ground Truth."
+      }
+    },
+    {
+      "example_id": "ded35bbc-a7a1-411d-9e80-caaa0d2f0553",
+      "inputs": {
+        "bug_report": "Botão de adicionar ao carrinho não funciona no produto ID 1234."
+      },
+      "scores_01": {
+        "helpfulness": 0.925,
+        "correctness": 1.0,
+        "f1_score": 1.0,
+        "clarity": 0.85,
+        "precision": 1.0
+      },
+      "scores_09": {
+        "helpfulness": 0.825,
+        "correctness": 0.875,
+        "f1_score": 1.0,
+        "clarity": 0.9,
+        "precision": 0.75
+      },
+      "delta": {
+        "helpfulness": -0.1,
+        "correctness": -0.125,
+        "f1_score": 0.0,
+        "clarity": 0.05,
+        "precision": -0.25
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo usuário, eu quero que o botão \"Adicionar ao carrinho\" funcione na página do produto com ID 1234, para que eu possa incluir esse produto no carrinho e prosseguir com a compra.\n\n## Critérios de Aceitação\n### Cenário de sucesso\n- Dado que estou na página do produto com ID 1234\n- Quando clico em \"Adicionar ao carrinho\"\n- Então o produto 1234 é adicionado ao carrinho com quantidade 1\n- E o carrinho é atualizado para refletir o item (contagem e valor)\n- E é exibida uma confirmação de adição ao carrinho\n\n### Cenário de falha\n- Dado que estou na página do produto com ID 1234\n- Quando clico em \"Adicionar ao carrinho\" e a ação falha\n- Então o item não é adicionado ao carrinho\n- E é exibida uma mensagem de erro clara informando a falha ao adicionar ao carrinho\n- E posso tentar novamente a ação"
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo usuário, eu quero adicionar o produto com ID 1234 ao carrinho ao clicar no botão \"Adicionar ao carrinho\", para que o item seja incluído no carrinho de compras.\n\n## Critérios de Aceitação\n### Sucesso\n- Dado que estou na página do produto com ID 1234\n- Quando clico no botão \"Adicionar ao carrinho\" e a operação é concluída com sucesso\n- Então o produto 1234 é adicionado ao carrinho\n- E o contador de itens no carrinho é atualizado\n- E é exibida uma confirmação visual informando que o produto foi adicionado ao carrinho\n\n### Falha\n- Dado que estou na página do produto com ID 1234\n- Quando clico no botão \"Adicionar ao carrinho\" e ocorre um erro de rede ou do servidor\n- Então o carrinho não é alterado\n- E é exibida uma mensagem de erro clara ao usuário\n- E o botão de adicionar permanece disponível para nova tentativa"
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "Avaliação mostra correspondência completa com Ground Truth: a resposta gera a User Story para o botão em 1234, com cenários de sucesso (adicionar ao carrinho, confirmação, atualização do contador) e atende aos critérios de aceitação. O conteúdo adicional de cenário de falha não contradiz o Ground Truth e amplia a cobertura de falhas, mantendo a relevância. Assim, precisão e recall são maximizados (1.0 cada).",
+        "clarity": "Avaliação de 4 critérios: organização, linguagem, ausência de ambiguidade e concisão. A resposta está bem estruturada: seção de User Story e Critérios de Aceitação com cenários de sucesso e falha. A linguagem é simples e direta, com termos padronizados (Dado/Quando/Então). Razoavelmente clara e sem ambiguidades significativas; as condições de sucesso e falha estão explícitas. Pode melhorar na concisão, pois repete informações em excesso, e algumas partes poderiam ser mais diretas. No geral, clareza alta, justificando uma nota de 0.85.",
+        "precision": "Raciocínio: A resposta está diretamente alinhada com a pergunta, foca no funcionamento do botao Adicionar ao carrinho para o produto 1234 e descreve cenários de sucesso e falha equivalentes aos criterios da Ground Truth. Não introduz informações não solicitadas, usa termos consistentes com a tarefa (adicionar ao carrinho, confirmacao, atualizacao do contador) e não apresenta alucinaoes factuais. Em suma, e precisa, focalizada e compativel com a referencia."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta gerada cobre todas as informações da Ground Truth: pré-condição, ação, resultado, confirmação visual e atualização do contador, além de especificar o ID do produto 1234. Não há omissões relevantes nem informações incorretas em relação aos critérios de aceitação. A inclusão de uma seção de falha é adicional, mas não contradiz os elementos essenciais solicitados.",
+        "clarity": "A resposta está bem organizada: introduz a User Story e os Critérios de Aceitação com seções de Sucesso e Falha. A linguagem é simples e direta, sem jargões. Os critérios descrevem claramente o que deve acontecer (produto adicionado, contador atualizado, confirmação) e o que ocorre em falha (erro, mensagem clara, retry). Não há ambiguidades relevantes: o cenário é específico para o produto 1234. É concisa e não repete desnecessariamente. Poderia alinhar-se ainda mais com a referência, enfatizando o objetivo do cliente em vez de detalhes de implementação, mas a clareza está boa.",
+        "precision": "Avaliação: 1) Ausência de alucinações: nenhuma informação inventada; é uma user story genérica sobre adicionar ao carrinho (sem afirmações falsas). 2) Foco na pergunta: não aborda o problema específico de o botão não funcionar para o ID 1234; fornece apenas um cenário ideal/típico, desviando do pedido. 3) Correção factual: o conteúdo corresponde aos critérios de aceitação da ground truth (adicionar ao carrinho, confirmação visual, contador atualizado), embora em nível conceitual. Overall: útil, mas não resolve o problema reportado."
+      }
+    },
+    {
+      "example_id": "ec6b276a-9d7b-4c17-b399-3b4fea5a970a",
+      "inputs": {
+        "bug_report": "Campo de email aceita texto sem @, permitindo cadastros inválidos."
+      },
+      "scores_01": {
+        "helpfulness": 0.871,
+        "correctness": 0.8347,
+        "f1_score": 0.8024,
+        "clarity": 0.875,
+        "precision": 0.867
+      },
+      "scores_09": {
+        "helpfulness": 0.83,
+        "correctness": 0.8241,
+        "f1_score": 0.8182,
+        "clarity": 0.83,
+        "precision": 0.83
+      },
+      "delta": {
+        "helpfulness": -0.041,
+        "correctness": -0.0106,
+        "f1_score": 0.0158,
+        "clarity": -0.045,
+        "precision": -0.037
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo usuário que está se cadastrando, eu quero que o campo de email aceite apenas endereços de email válidos (com @), para que cadastros inválidos não sejam criados.\n\n## Critérios de Aceitação\n### Validação de formato\n- Dado que estou no formulário de cadastro e digito um email sem o caractere \"@\"\n- Quando tento cadastrar\n- Então a operação é bloqueada, aparece uma mensagem de erro indicando que o email é inválido, e o cadastro não é enviado para o backend\n\n### Cadastro válido\n- Dado que digito um email válido (conforme formato de email) no formulário de cadastro\n- Quando clico em cadastrar\n- Então o cadastro é criado com sucesso e o usuário recebe a confirmação do cadastro"
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo usuário, eu quero que o campo de email aceite apenas endereços válidos (com '@' e domínio), para que cadastros inválidos não sejam criados.\n\n## Critérios de Aceitação\n- Dado que estou no formulário de cadastro\n- Quando preencho o campo email com \"usuarioexemplo.com\" (sem '@') e tento submeter\n- Então a submissão é bloqueada e aparece uma mensagem de erro \"Email inválido\" próximo ao campo\n- E o valor digitado permanece no campo para correção\n\n- Dado que envio uma requisição de cadastro com email inválido\n- Quando o backend processa a requisição\n- Então o cadastro não é criado e a resposta indica erro de validação de email\n- E a interface exibe uma mensagem de erro correspondente e não avança no fluxo de cadastro"
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta cobre a história do usuário e os critérios de aceitação pertinentes (validação de formato, bloqueio/erro ao digitar sem '@', não prosseguir). Falha: não explicitamente afirma que a mensagem deve explicar o formato correto, o que está presente no enunciado de aceitação da ground truth, reduzindo o recall. A inclusão de um caminho de cadastro válido é adicional porém não incorreta.",
+        "clarity": "A resposta está bem organizada (seção de User Story e Critérios de Aceitação) e usa linguagem direta com passos claros para os cenários inválido e válido. Evita ambiguidades: especifica que o email sem @ gera erro e bloqueia o cadastro, e que emails válidos devem prosseguir. A concisão é boa, cobrindo os fluxos principais sem jargões desnecessários. Observação: a inclusão de um caminho de cadastro válido é útil, mas não essencial para validar o formato; manter foco no requisito de validação pode melhorar ainda mais a clareza.",
+        "precision": "A resposta está alinhada com a ground truth: transforma o objetivo em validação de formato de email, com mensagem de erro ao digitar sem '@' e impedimento de prosseguir; também contempla um fluxo de cadastro válido. O texto não traz alucinações evidentes e é focado no tópico. A lacuna factual é a falta de menção explícita de que a mensagem de erro explique o formato correto do email (condição exigida pela ground truth), o que reduz o score ligeiramente. No geral, alta precisão com pequena deficiência de explicação formatual."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "Avaliação: A resposta gerada cobre as validações de cliente e backend, com mensagem de erro 'Email inválido' quando o campo sem '@' é submetido, impedindo o prosseguimento e mantendo o valor para correção. Também descreve a validação no backend. Contudo, não atende explicitamente à exigência de que a mensagem explique o formato correto. Portanto, a precision é alta, mas a recall é afetada pela omissão da explicação do formato. Pontos fortes: bloqueio de envio e validação de domínio; ponto fraco: falta de orientação explicita sobre o formato.",
+        "clarity": "Organização: a resposta está estruturada com seções claras (User Story e Critérios de Aceitação), facilitando leitura. Linguagem: direta, em português simples, sem jargões desnecessários. Ausência de ambiguidade: deixa claro que apenas emails válidos são aceitos; descreve mensagens de erro e comportamento tanto no frontend quanto no backend. Concisão: contém os elementos essenciais, incluindo um exemplo de input inválido; porém poderia ser mais direto ao reduzir redundâncias entre cenários. Em suma, a clareza é boa, com pequena margem para simplificação.",
+        "precision": "A resposta aborda a necessidade de validação de email e cenários de erro (ex.: teste com email sem '@' bloqueando a submissão e exibindo 'Email inválido'), alinhada com o ground truth. Inclui comportamentos de frontend e backend, o que é apropriado. No entanto, não traz explicitamente a exigência de uma mensagem que explique o formato correto (graduação do ground truth), o que reduz levemente a precisão. Não há alucinações evidentes; os exemplos são plausíveis e não extrapolam demais."
+      }
+    },
+    {
+      "example_id": "d8bc32f7-56e1-4dde-852e-060db5eaaa06",
+      "inputs": {
+        "bug_report": "Carrinho permite finalizar compra mesmo com produto fora de estoque.\n\nFluxo do bug:\n1. Produto tem 2 unidades em estoque\n2. Cliente A adiciona 2 unidades ao carrinho\n3. Estoque fica zerado\n4. Cliente B ainda consegue adicionar ao carrinho\n5. Cliente B finaliza compra\n6. Sistema gera pedido mas não tem estoque para enviar"
+      },
+      "scores_01": {
+        "helpfulness": 0.83,
+        "correctness": 0.8244,
+        "f1_score": 0.7488,
+        "clarity": 0.76,
+        "precision": 0.9
+      },
+      "scores_09": {
+        "helpfulness": 0.755,
+        "correctness": 0.8636,
+        "f1_score": 0.8571,
+        "clarity": 0.64,
+        "precision": 0.87
+      },
+      "delta": {
+        "helpfulness": -0.075,
+        "correctness": 0.0392,
+        "f1_score": 0.1083,
+        "clarity": -0.12,
+        "precision": -0.03
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo cliente, eu quero que o carrinho não permita finalizar a compra quando o estoque do produto estiver fora de estoque, para que não seja criado um pedido sem estoque e eu receba feedback claro sobre a disponibilidade.\n\n## Critérios de Aceitação\n### Cenário concorrência (estoque insuficiente no checkout)\n- Dado que o estoque disponível do produto é 2 unidades\n- E Cliente A adiciona 2 unidades ao carrinho\n- E Cliente B adiciona 1 unidade ao carrinho\n- Quando Cliente B tenta finalizar a compra\n- Então o checkout falha com uma mensagem de estoque insuficiente para o item\n- E nenhum pedido é criado para Cliente B\n- E o carrinho de Cliente B permanece com as unidades adicionadas para nova tentativa\n- E o estoque atual não é reduzido além do disponível\n\n### Cenário de fluxo bem-sucedido (estoque suficiente)\n- Dado que o estoque disponível do produto é 2 unidades\n- E Cliente A adiciona 2 unidades ao carrinho\n- Quando Cliente A finaliza a compra\n- Então o pedido é criado com 2 unidades\n- E o estoque disponível é atualizado de forma consistente (reduzido para 0)\n- E o carrinho de Cliente A fica vazio\n\n## Contexto Técnico\n- O fluxo atual permite adicionar itens ao carrinho mesmo quando o estoque fica zerado durante o processo, levando a situações em que a finalização gera pedidos sem estoque para envio.\n- A validação de estoque ocorre apenas na finalização, o que favorece condições de corrida entre usuários.\n\n## Sugestões Técnicas a Validar\n- Garantir atomicidade entre validação de estoque e criação de pedido (uso de transação ou bloqueio de estoque).\n- Implementar reserva de estoque no carrinho ou lock de estoque durante o checkout para evitar condições de corrida.\n- Atualizar a interface para refletir disponibilidade real ao adicionar ao carrinho e fornecer feedback claro em caso de falha por estoque.\n- Em caso de falha por estoque, não criar o pedido e manter o carrinho com as quantidades para nova tentativa.\n"
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo cliente, eu quero que o checkout seja recusado quando a quantidade de itens no meu carrinho não estiver disponível no estoque atual, para que eu não gere pedidos que não podem ser atendidos.\n\n## Critérios de Aceitação\n### Cenário: Checkout bem-sucedido quando há estoque disponível\n- Dado que o produto X tem 2 unidades em estoque\n- E o cliente A possui 2 unidades de X no carrinho\n- Quando o cliente A finaliza a compra\n- Então o pedido é criado para 2 unidades de X\n- E o estoque de X é debitado para 0\n\n### Cenário: Checkout recusado quando estoque está esgotado\n- Dado que o produto X tem 0 unidades em estoque\n- E o cliente B possui 1 unidade de X no carrinho\n- Quando o cliente B finaliza a compra\n- Então a finalização é rejeitada com mensagem de estoque insuficiente\n- E nenhum pedido é criado\n\n### Cenário: Condição de corrida entre clientes\n- Dado que o produto X tem 2 unidades em estoque\n- E o cliente A possui 2 unidades de X no carrinho\n- E o cliente B possui 1 unidade de X no carrinho\n- Quando o cliente A finaliza a compra consumindo 2 unidades (em cenário concorrente)\n- E o cliente B tenta finalizar quase ao mesmo tempo\n- Então apenas um pedido é criado para 2 unidades\n- E o estoque de X fica em 0\n- E a tentativa de cliente B de finalizar resulta em erro de estoque insuficiente\n- E nenhum pedido é criado para o cliente B"
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta cobre o objetivo principal (validação de estoque em tempo real e bloqueio da finalização com mensagem adequada) e inclui cenários de concorrência e fluxo bem-sucedido, além de manter o carrinho sem criar pedidos em falha e não reduzir o estoque além do disponível. Contudo, não aborda explicitamente as diretrizes de prevenção do ground truth (aviso de estoque limitado ao adicionar e reserva de estoque de 15 minutos) nem a sugestão de remover o item ou aguardar reposição; esses itens menores estão ausentes. A resposta está majoritariamente alinhada, mas não completa.",
+        "clarity": "A resposta está bem organizada, com seções claras (User Story, Critérios de Aceitação, Contexto Técnico, Sugestões). A linguagem é direta, com termos técnicos compreensíveis. No entanto, há redundância e o conteúdo é relativamente longo, prejudicando a concisão. Não deixa ambiguidade grave, mas alguns cenários poderiam ser descritos de forma mais sintética. Em termos de clareza de requisitos, está compreensível, porém poderia incluir sinais mais diretos de sucesso/falha para evitar interpretações.",
+        "precision": "A resposta aborda o problema (checagem de estoque no checkout e prevenção de pedidos sem estoque) com cenários de concorrência, mensagens de erro e sugestões técnicas (transação, bloqueio/reserva de estoque). Não há alucinações evidentes. Nota-se apenas a ausência da sugestão explícita de remover o item ou aguardar reposição na mensagem de erro, conforme Ground Truth. Em síntese, está bem alinhada ao objetivo, apenas faltando esse detalhamento de UX/fluxo recomendado."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta gerada apresenta a User Story compatível e 3 cenários de aceitação alinhados com o objetivo de evitar pedidos não atendíveis: sucesso com estoque disponível, falha quando estoque zerado e condição de corrida entre clientes. Esses itens correspondem aos pontos-chave do Ground Truth. Falta abordar as medidas de prevenção (estoque limitado ao adicionar, reserva de estoque) e o contexto do bug, o que reduz o recall para 3/4.",
+        "clarity": "Avaliação: Organização boa, com seções claras (User Story, Critérios de Aceitação), porém a resposta mistura a solução gerada com a referência esperada e contexto do bug, o que reduz a clareza. Linguagem direta e compreensível, com termos técnicos apropriados. Ausência de ambiguidade é razoável, porém alguns cenários são extensos e podem gerar dúvidas. Concisão fica aquém do ideal: há informações repetidas e trechos não essenciais (referência) que tornam o texto mais longo. Recomenda-se um formato mais objetivo, apenas com a solução proposta e cenários essenciais.",
+        "precision": "A resposta é centrada no bug de validação de estoque no checkout e cenários de corrida, sem informações não solicitadas. Alinha-se com a Ground Truth ao prever rejeição quando fora de estoque e criação de pedidos quando houver disponibilidade. Pode faltar menção explícita a mensagens de erro, aviso de estoque limitado e reserva temporária de estoque (prevenção). Pontos: Ausência de alucinações ~0.9, Foco no problema ~0.9, Correção factual ~0.8. Média ≈ 0.87."
+      }
+    },
+    {
+      "example_id": "a38aac73-9087-43ea-8d6d-c8b9e60e6e78",
+      "inputs": {
+        "bug_report": "Dashboard mostra contagem errada de usuários ativos. Mostra 50 mas só há 42 na lista."
+      },
+      "scores_01": {
+        "helpfulness": 0.72,
+        "correctness": 0.7467,
+        "f1_score": 0.7133,
+        "clarity": 0.66,
+        "precision": 0.78
+      },
+      "scores_09": {
+        "helpfulness": 0.865,
+        "correctness": 0.8491,
+        "f1_score": 0.8182,
+        "clarity": 0.85,
+        "precision": 0.88
+      },
+      "delta": {
+        "helpfulness": 0.145,
+        "correctness": 0.1024,
+        "f1_score": 0.1049,
+        "clarity": 0.19,
+        "precision": 0.1
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo administrador, eu quero que a contagem de usuários ativos no dashboard reflita o número real de usuários ativos exibidos na lista, para que as métricas apresentadas sejam confiáveis e consistentes.\n\n## Critérios de Aceitação\n### Contagem consistente com a lista\n- Dado que a lista de usuários ativos exibida no dashboard contém N itens\n- Quando o dashboard é carregado\n- Então o contador \"Usuários ativos\" exibe N\n\n### Atualização de contagem ao modificar a lista\n- Dado que a lista de usuários ativos é alterada para M itens (por exemplo, após uma ação de ativação/desativação)\n- Quando o dashboard é recarregado ou recebe uma atualização de dados\n- Então o contador exibe M e permanece sincronizado com a lista\n\n## Informações a confirmar\n- O que define exatamente \"usuarios ativos\" nesta contagem (status, filtros, tempo de atividade)?\n- A contagem é derivada de uma API dedicada ou é derivada da lista renderizada no frontend?\n- Existem casos de paginação ou limites que possam afetar a contagem exibida?"
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo Administrador do sistema, eu quero que a contagem de usuários ativos exibida no dashboard seja consistente com a lista de usuários ativos apresentada, para que eu possa confiar no número mostrado ao gerenciar a base de usuários.\n\n## Critérios de Aceitação\n### Cenário 1: Contagem reflete a lista ao carregar\n- Dado que a lista de usuários ativos exibidos contém 42 itens\n- Quando o dashboard é carregado\n- Então a contagem de usuários ativos exibida deve ser 42\n- E a lista exibida contém exatamente 42 usuários ativos\n\n### Cenário 2: Correção de discrepância entre contagem e lista\n- Dado que a contagem exibida no dashboard está 50, enquanto a lista mostra 42 usuários ativos\n- Quando o dashboard carrega ou sincroniza os dados\n- Então a contagem exibida é atualizada para 42\n- E a lista permanece com 42 usuários ativos\n\n## Sugestões Técnicas a Validar\n- Verificar a origem da contagem de ativos: se está derivando da fonte correta ou de cache desatualizado.\n- Garantir atomicidade entre a obtenção da lista e a contagem apresentada.\n- Implementar validação na UI para recalcular a contagem com base no tamanho da lista ou, pelo menos, alinhar a contagem com o conjunto exibido após carregamento.\n- Validar cenários de paginação ou filtros para garantir que a contagem reflita apenas os itens visíveis/ativos conforme aplicado."
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "Pontos positivos: a resposta aborda o papel do admin, propõe que a contagem de ativos reflita a lista de usuários ativos e inclui critérios de atualização/feedback (informações a confirmar). Pontos fracos: não afirme explicitamente 'em tempo real' como requisito, em vez disso usa recarregar/atualização de dados; a contagem depende da lista, não deixando claro que deve refletir o total real de ativos no conjunto de dados (podendo haver filtragem/paginacão).",
+        "clarity": "Avaliação de clareza: Organização é clara e estruturada, mas inclui informações extras e um bloco RESPOSTA ESPERADA que torna o texto redundante. Linguagem é simples e direta. Ausência de Ambiguidade é boa quanto à intenção, porém não aborda explicitamente a discrepância (50 vs 42) nem define como a contagem é calculada. Concisão é afetada pela repetição e conteúdo adicional. Média estimada de clareza: 0.66.",
+        "precision": "A resposta evita alucinações, apresentando uma user story e critérios de aceitação que vinculam a contagem à lista exibida. Não afirma números específicos nem dados não verificáveis. Ela aborda consistência entre a contagem e a lista e menciona atualização de dados (recarregar/receber atualizações). Entretanto, não afirma explicitamente 'tempo real', o que diverge levemente da ground truth. Também não define claramente o que constitui 'ativo', embora inclua perguntas de confirmação sobre esse ponto. Em resumo, é relevante e focada, mas poderia alinhar-se melhor ao requisito de tempo real e ao critério estrito de status ativo."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta gerada está alinhada ao objetivo da ground truth: contagem de ativos correta para admin e atualização ao carregar/sincronizar, cobrindo a maioria dos critérios (correspondência com a lista, correção de discrepância, atualização de dados). Falha leve ao não usar explicitamente a expressão 'em tempo real', embora a ideia de atualização contínua seja presumível via carregamento/sincronização. Conteúdo técnico adicional é relevante, mas não contradiz os requisitos.",
+        "clarity": "Organização: boa, com seções claras (User Story, Critérios, Sugestões Técnicas). Linguagem: simples e direta. Ausência de ambiguidade: comunica bem que a contagem deve refletir a lista e sincronizar ao carregar/ atualizar; poderia esclarecer paginação/filtros. Concisão: prática, mas poderia ser mais objetiva, reduzindo repetições. Em conjunto, a resposta é clara e útil para validação de consistência entre a lista de ativos e a contagem.",
+        "precision": "A resposta não introduz alucinações: utiliza o problema (contagem 50 vs lista 42) e propõe uma solução com cenários de carregamento/sincronização para fazer a contagem refletir a lista. Mantém foco no objetivo de correção de discrepâncias entre contagem e itens exibidos. Não há afirmações factuais falsas. Contudo, embora trate de sincronização, não enfatiza explicitamente atualização em tempo real nem o filtro/exclusão de itens que não estejam com status 'ativo', conforme Ground Truth. Em geral, é relevante, mas esses pontos poderiam ficar mais explícitos."
+      }
+    },
+    {
+      "example_id": "2a4eaf3d-6056-4a39-b430-53a9a16f872f",
+      "inputs": {
+        "bug_report": "Endpoint /api/users/:id retorna dados de qualquer usuário sem validar permissões.\n\nExemplo:\n- Usuário comum (ID 100) consegue acessar GET /api/users/1 (admin)\n- Recebe email, telefone, endereço do admin\n- Apenas admins deveriam ver dados de outros usuários\n\nSeveridade: ALTA - vazamento de dados pessoais"
+      },
+      "scores_01": {
+        "helpfulness": 0.905,
+        "correctness": 1.0,
+        "f1_score": 1.0,
+        "clarity": 0.81,
+        "precision": 1.0
+      },
+      "scores_09": {
+        "helpfulness": 0.9,
+        "correctness": 0.8604,
+        "f1_score": 0.7208,
+        "clarity": 0.8,
+        "precision": 1.0
+      },
+      "delta": {
+        "helpfulness": -0.005,
+        "correctness": -0.1396,
+        "f1_score": -0.2792,
+        "clarity": -0.01,
+        "precision": 0.0
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo usuário, eu quero que o endpoint GET /api/users/:id verifique autenticação e autorização antes de retornar dados de perfis, para que usuários comuns não possam acessar dados de outros usuários e dados sensíveis não sejam expostos.\n\n## Critérios de Aceitação\n### Acesso não autorizado\n- Dado que estou autenticado como usuário comum (ID 100)\n- Quando faço GET /api/users/1\n- Então a API retorna status 403 Forbidden\n- E não retorna nenhum dado do usuário 1, incluindo informações sensíveis (ex.: email, telefone, endereço)\n\n### Acesso autorizado para admins\n- Dado que estou autenticado como administrador\n- Quando faço GET /api/users/1\n- Então a API retorna status 200 OK com os dados do usuário 1, incluindo informações permitidas (ex.: email, telefone, endereço)\n\n### Acesso ao próprio perfil\n- Dado que estou autenticado como usuário comum (ID 100)\n- Quando faço GET /api/users/100\n- Então a API retorna status 200 OK com os dados do meu próprio perfil e não expõe dados de outros usuários\n\n## Impacto\n- ALTA - Vazamento de dados pessoais entre usuários\n\n## Contexto Técnico\n- Endpoint /api/users/:id retorna dados de qualquer usuário sem validar permissões.\n- Exemplo descrito: um usuário comum (ID 100) acessa GET /api/users/1 (admin) e recebe dados sensíveis do admin (email, telefone, endereço). Dados sensíveis devem ser protegidos.\n\n## Sugestões Técnicas a Validar\n- Implementar verificação de autorização no backend (RBAC): admin pode ver dados de outros usuários; usuário comum só pode ver seu próprio perfil.\n- Padronizar códigos de resposta: 403 Forbidden quando não autorizado; 200 OK com dados quando autorizado.\n- Garantir que a resposta não inclua dados sensíveis de outros usuários para requisições não autorizadas.\n- Adicionar logs de tentativas de acesso para auditoria de controle de acesso."
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo usuário, eu quero que o endpoint GET /api/users/:id valide permissões ao retornar dados de um usuário, para que apenas usuários autorizados (por exemplo, admins) possam ver dados de outros usuários, protegendo informações pessoais.\n\n## Critérios de Aceitação\n### Acesso não autorizado\n- Dado que sou um usuário comum logado\n- Quando faço GET /api/users/:id com um id diferente do meu\n- Então a API retorna 403 Forbidden e não retorna dados sensíveis do usuário alvo (ex.: email, telefone, endereço)\n\n### Acesso autorizado (admin)\n- Dado que sou admin\n- Quando faço GET /api/users/:id de outro usuário\n- Então a API retorna 200 OK com os dados do usuário alvo dentro do que é permitido para administradores, respeitando as regras de privacidade\n\n## Contexto Técnico\n- Endpoint /api/users/:id atualmente não valida permissões de acesso\n- Exemplo: usuário comum consegue acessar GET /api/users/1 (admin) e recebe email, telefone e endereço do admin\n- Severidade: ALTA - vazamento de dados pessoais\n\n## Sugestões Técnicas a Validar\n- Implementar controle de acesso (RBAC) na rota /api/users/:id\n- Garantir que a validação de permissão ocorra antes da leitura dos dados do usuário\n- Adicionar testes de integração cobrindo cenários de acesso autorizado e não autorizado\n- Manter logs de auditoria para acessos a dados de usuários"
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "Concorda com ground truth: validação de permissões, retorno 403 para usuários comuns acessando outros perfis, 200 para admins e para o próprio usuário, e logs de auditoria. Não expõe dados sensíveis de terceiros. Inclui sugestões técnicas (RBAC, middleware) e códigos de resposta adequados. A única nuance é a expressão de 'dados completos' vs 'informações permitidas' para admins, mas o resultado funcional permanece equivalente.",
+        "clarity": "A resposta está bem organizada (seções claras), usa linguagem direta e cobre cenários de acesso não autorizado, acesso de admins e acesso ao próprio perfil, com critérios de aceitação e contexto técnico. A ambiguidade é baixa. A concisão poderia melhorar, pois há repetição e excesso de detalhes em algumas seções, tornando-a mais longa que o necessário. A menção a RBAC é útil, mas poderia ser expandida de forma mais consistente. Em geral, clareza alta com leve redundância.",
+        "precision": "Correção: A resposta foca exatamente na validação de permissões para /api/users/:id, propondo 403 para acesso não autorizado, 200 para admins com dados do usuário e 200 para o próprio perfil. Inclui auditoria de logs e RBAC; alinha com o ground truth de que admins podem ver todos os dados, usuários comuns apenas seus dados. Não traz alucinações: descreve padrões comuns (RBAC, middleware, códigos 403/200) e aborda dados sensíveis (email, telefone, endereço). Contexto de severidade ALTA. Em resumo, precisão alta: cobre cenários, limites de acesso e logs sem inventar fatos."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta cobre o objetivo de validar permissões, incluindo 403 para usuário comum e 200 para admins, além de mencionar severidade e dados expostos. Falha em esclarecer que admins devem ter dados completos de todos os usuários e registrar o acesso em log de auditoria (apenas sugerido). O requisito de 'dados dentro do que é permitido' introduz ambiguidade em relação aos critérios de aceitação. Em geral, apresenta boa cobertura com lacunas críticas.",
+        "clarity": "A resposta apresenta boa organização (User Story, Critérios, Contexto Técnico, Sugestões). A linguagem é direta e compreensível, com termos técnicos usuais; evita jargões desnecessários, embora mencione RBAC sem explicação adicional. A comunicação é clara quanto ao fluxo de acesso não autorizado (403) e autorizado (admin) e descreve cenários de teste. Pode haver ambiguidade sobre o escopo de dados acessíveis a admins (dados completos vs. dados permitidos) e há alguma repetição. No geral, a clareza é boa, com leve ambiguidade no escopo de dados de admins.",
+        "precision": "A resposta está alinhada com o problema: descreve controle de acesso à rota /api/users/:id, define cenários de acesso de usuário comum e admin, usa 403 para não autorizado e 200 para autorizado, menciona logs de auditoria e testes, e sugere middleware de autorização. Não há informações fabricadas e está em conformidade com o Ground Truth; não há desvios relevantes nem alegações não verificáveis."
+      }
+    },
+    {
+      "example_id": "9fa9e593-da1f-437d-8247-1091cd9d99fd",
+      "inputs": {
+        "bug_report": "Imagens de produtos não aparecem no Safari. No Chrome funciona normal."
+      },
+      "scores_01": {
+        "helpfulness": 0.7625,
+        "correctness": 0.8286,
+        "f1_score": 0.8571,
+        "clarity": 0.725,
+        "precision": 0.8
+      },
+      "scores_09": {
+        "helpfulness": 0.89,
+        "correctness": 0.765,
+        "f1_score": 0.6,
+        "clarity": 0.85,
+        "precision": 0.93
+      },
+      "delta": {
+        "helpfulness": 0.1275,
+        "correctness": -0.0636,
+        "f1_score": -0.2571,
+        "clarity": 0.125,
+        "precision": 0.13
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo usuário de loja online, eu quero que as imagens dos produtos apareçam no Safari, para que eu possa avaliar os itens da mesma forma que no Chrome.\n\n## Critérios de Aceitação\n### Compatibilidade entre navegadores\n- Dado que estou na página de um produto acessada pelo Safari\n- Quando a página é carregada\n- Então a imagem do produto é exibida e carrega corretamente no Safari\n\n- Dado que estou na mesma página de produto acessada pelo Chrome\n- Quando a página é carregada\n- Então a imagem do produto é exibida e carrega corretamente no Chrome"
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo usuário, eu quero que as imagens dos produtos apareçam no Safari, para que eu possa visualizar corretamente os produtos, assim como ocorre no Chrome.\n\n## Critérios de Aceitação\n- Dado que estou usando o Safari e estou na página de listagem de produtos\n- Quando a página carrega\n- Então as imagens de todos os produtos aparecem, sem falhas de carregamento, com aparência idêntica às imagens exibidas no Chrome"
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta gerada cobre a user story sobre exibir imagens no Safari e inclui critérios de aceitação para Safari e para o Chrome (carregar e exibidas corretamente), o que está alinhado com o objetivo de paridade entre navegadores. Não apresenta informações incorretas. Contudo, não há menção explícita de tempo de carregamento similar nem da expressão direta de 'mesma qualidade' entre navegadores, conforme a ground truth; apenas sugere paridade ao comparar Safari com Chrome. Assim, 3 itens relevantes presentes vs 4 itens relevantes na ground truth.",
+        "clarity": "Organização boa: há seções claras (User Story e Critérios) e bullets; linguagem direta; no entanto mistura requisitos de Safari/Chrome e duplica informações, o que pode confundir. Ausência de ambiguidade: há uma pequena ambiguidade entre 'imagens' (plural) e 'a imagem' (singular) e não há menção às métricas de qualidade ou tempo de carregamento que o enunciado espera. Concisão é aceitável, porém há redundância. Em resumo, é claro, mas poderia alinhar-se ao formato esperado e incluir critérios de qualidade de imagem e tempo de carregamento.",
+        "precision": "A resposta não apresenta informações factualmente falsas. No entanto, não aborda diretamente o problema relatado (imagens não aparecem no Safari) nem oferece diagnóstico ou soluções práticas. Mantém um objetivo genérico de cross‑browser e adiciona o aspecto Chrome, o que não resolve o problema específico. Em relação à ground truth, o objetivo é similar, mas a resposta falha em orientar sobre debugging ou ações concretas para o Safari."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta gerada mantém o foco no Safari e na necessidade de as imagens dos produtos carregarem sem falhas e com aparência comparable aos Chrome. Entretanto, ela descreve a página como a de listagem de produtos em vez da página de um produto, o que contraria o objetivo da Ground Truth. Além disso, não menciona explicitamente o tempo de carregamento similar (critério de aceitação ausente). Assim, 3 de 5 itens corretos/presentes, resultando em precisão e recall de 0.6.",
+        "clarity": "Organização: boa, com seções distintas (User Story; Critérios de Aceitação) que guiam a leitura; o uso de markdown é opcional, mas não prejudica a clareza. Linguagem: simples, direta, sem jargões. Ausência de ambiguidade: descreve o cenário (Safari, página de listagem) e o resultado esperado (imagens carregando sem falha, com aparência equivalente ao Chrome). Concisão: suficiente, sem redundâncias; poderia ser mais enxuta removendo os rótulos de seção para reduzir tamanho, mas as informações essenciais estão presentes.",
+        "precision": "AUSÊNCIA DE ALUCINAÇÕES: não há afirmações factuais incorretas; trata-se de uma user story genérica. FOCO NA PERGUNTA: foca em Safari e paridade com Chrome, mas desvia do pedido original ao mencionar a página de listagem em vez da página de produto, e não sugere passos de solução. CORREÇÃO FACTUAL: não há erros verificáveis; o conteúdo é conceitual e não contradiz fatos observáveis. Observação: não aborda o tempo de carregamento, que era parte da ground truth."
+      }
+    },
+    {
+      "example_id": "e8555f67-f7d6-4e6c-a946-b7d0dd839188",
+      "inputs": {
+        "bug_report": "Modal de confirmação de exclusão aparece atrás do menu lateral em telas pequenas (< 768px).\n\nDetalhes:\n- z-index do modal: 1000\n- z-index do menu lateral: 1050\n- Usuários não conseguem clicar nos botões do modal\n- Precisam fechar o menu lateral antes"
+      },
+      "scores_01": {
+        "helpfulness": 0.74,
+        "correctness": 0.6894,
+        "f1_score": 0.6788,
+        "clarity": 0.78,
+        "precision": 0.7
+      },
+      "scores_09": {
+        "helpfulness": 0.815,
+        "correctness": 0.775,
+        "f1_score": 0.6699,
+        "clarity": 0.75,
+        "precision": 0.88
+      },
+      "delta": {
+        "helpfulness": 0.075,
+        "correctness": 0.0856,
+        "f1_score": -0.0089,
+        "clarity": -0.03,
+        "precision": 0.18
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo usuário, eu quero que o modal de confirmação de exclusão apareça acima do menu lateral em telas pequenas, para que eu possa clicar nos botões de confirmação ou cancelamento sem precisar fechar o menu.\n\n## Critérios de Aceitação\n### Cenário: Exibição correta em tela pequena\n- Dado que a largura da tela é menor que 768px e eu iniciei o fluxo de exclusão de um item\n- Quando o modal de confirmação é exibido\n- Então o modal deve ficar acima do menu lateral e seus botões devem ser clicáveis\n\n### Cenário: Fluxo de confirmação\n- Dado que o modal está aberto\n- Quando eu clico em Confirmar\n- Então a exclusão é executada e o modal fecha\n\n### Cenário: Fluxo de cancelamento\n- Dado que o modal está aberto\n- Quando eu clico em Cancelar\n- Então o modal fecha sem excluir o item\n\n## Contexto Técnico\n- Z-index atual: modal 1000; menu lateral 1050\n- Em telas pequenas (< 768px), o modal aparece atrás do menu lateral, bloqueando cliques nos botões\n- Os usuários precisam fechar o menu para prosseguir com a confirmação, o que atrasa o fluxo\n\n## Sugestões Técnicas a Validar\n- Garantir que o modal tenha z-index acima do menu lateral em telas pequenas, assegurando que o modal fique visível e os botões sejam clicáveis\n- Verificar o comportamento do overlay/backdrop para não bloquear a interação com o modal\n- Validar que a interação de Confirmar/Cancelar feche o modal corretamente e atualize o estado da lista conforme esperado\n\n## Impacto\n- Impacto: Usuários em telas pequenas não conseguem confirmar exclusão sem fechar o menu, o que atrasa o fluxo e pode levar a frustração."
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo usuário, eu quero que o modal de confirmação de exclusão apareça acima do menu lateral em telas pequenas (< 768px), para que eu possa confirmar ou cancelar a exclusão sem precisar fechar o menu.\n\n## Critérios de Aceitação\n### Cenário: Modal visível e interativo acima do menu em telas pequenas\n- Dado que a tela está com largura menor que 768px\n- Quando eu aciono a confirmação de exclusão\n- Então o modal de confirmação é exibido acima do menu lateral (não fica atrás dele) e seus botões são clicáveis\n- E o foco permanece no modal\n- E não é necessário fechar o menu lateral para interagir com os botões de confirmação ou cancelamento\n\n## Impacto\n- Usuários não conseguem interagir com o modal de confirmação em telas pequenas, sendo obrigado a fechar o menu lateral para prosseguir, o que degrada a experiência e pode levar a ações acidentais.\n\n## Contexto Técnico\n- Estado atual observado: modal com z-index 1000 e menu lateral com z-index 1050\n- Em telas pequenas (< 768px), o modal fica atrás do menu lateral, bloqueando cliques nos botões\n\n## Sugestões Técnicas a Validar\n- Aumentar o z-index do modal para ficar acima do menu lateral em todas as regras de visualização (ex.: z-index ≥ 1100) ou tornar o modal renderizado via portal (document.body) para evitar dependência de contexto de empilhamento.\n- Garantir que o overlay bloqueie a interação com o conteúdo subjacente e que o foco seja movido para o modal com aria-modal=\"true\".\n- Validar comportamento em diferentes navegadores e dispositivos, incluindo acessibilidade por teclado.\n- Verificar se a elevação do modal não impacta outras janelas modais já existentes.\n\n"
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta cobre o objetivo (modal acima do menu em telas pequenas) e muitos itens técnicos (z-index, dispositivos, fluxo de confirmação/cancelamento). No entanto, falha em vários critérios do Ground Truth: não afirma literalmente que o modal fique acima de todos os elementos (apenas acima do menu), não aborda backdrop blur, foco automático para o modal, fechamento com ESC, nem fechamento ao clicar fora (backdrop). Também não especifica a largura mínima de 90% da tela. Esses itens ausentes reduzem a precisão, enquanto os itens correspondentes elevam a recall.",
+        "clarity": "Avaliação de clareza: A resposta está bem organizada (seções claras: User Story, Critérios, Contexto, Sugestões, Impacto), e a linguagem é direta. No entanto, há ambiguidade em relação aos critérios de aceitação: falta de requisitos explícitos sobre overlay/backdrop, foco/ACESSIBILIDADE, largura mínima do modal (não menciona 90% da tela) e comportamento de ESC/clicar fora. O objetivo do problema (z-index > 1050 em telas <768px) está citado, mas o plano não especifica a métrica de sucesso para acessibilidade. Em geral, é clara, mas não cobre todos os pontos de aceitação esperados, o que reduz a clareza total.",
+        "precision": "A resposta identifica a raiz do problema (modal atrás do menu em telas <= 768px) e recomenda elevar o z-index do modal acima do menu (contexto técnico menciona 1000 vs 1050). Mantém foco no fluxo e nos botões. Contudo, não traz explicitamente o valor numérico recomendado (>1050) nem aborda aspectos de acessibilidade (foco inicial, ESC, fechar ao clicar no backdrop) e a exigência de largura do modal (90% da tela) presente na ground truth. As sugestões ajudam, mas faltam elementos-chave da referência."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "Correções: O texto gerado aborda a necessidade do modal ficar acima do menu em telas <768px, manter foco no modal, tornar botões clicáveis e mencionar o bug de z-index (1000 vs 1050) com solução. Também sugere uso de overlay/portal e aria-modal. Contudo, não faz menção explícita ao requisito de ocupar >=90% da largura, nem aos controles de acessibilidade de ESC ou fechamento ao clicar fora. Esses itens estão no ground truth, mas ausentes na resposta.",
+        "clarity": "Clareza boa: a resposta está organizada em seções (história, critérios, contexto técnico e sugestões), o que facilita a leitura. A linguagem é direta e em português simples, sem jargões desnecessários. Não deixa dúvidas sobre o problema de z-index e as direções de melhoria. Pode melhorar a concisão ao reduzir repetições (o problema é descrito em várias partes) e ao oferecer um plano de ação mais direto com passos implementáveis para developers. No geral, é compreensível e útil, porém redundante em alguns pontos.",
+        "precision": "A resposta não apresenta alucinações e aborda o núcleo do problema: conflito de z-index entre modal e menu em telas <768px, sugerindo aumentar o z-index ou usar portal, além de aria-modal e overlay para bloquear a interação. Mantém foco no objetivo de tornar o modal interativo sem fechar o menu. Contudo, não cobre explicitamente todos os requisitos da ground truth (backdrop com blur, largura de pelo menos 90% da tela, fechamento com ESC e clique no backdrop). Assim, fica próximo do ideal, mas não completo."
+      }
+    },
+    {
+      "example_id": "b76da434-38eb-45b8-ba26-a5ec9d49ba21",
+      "inputs": {
+        "bug_report": "No iOS, ao girar o celular para landscape, o layout da tela de perfil fica quebrado."
+      },
+      "scores_01": {
+        "helpfulness": 0.9125,
+        "correctness": 1.0,
+        "f1_score": 1.0,
+        "clarity": 0.825,
+        "precision": 1.0
+      },
+      "scores_09": {
+        "helpfulness": 0.88,
+        "correctness": 1.0,
+        "f1_score": 1.0,
+        "clarity": 0.76,
+        "precision": 1.0
+      },
+      "delta": {
+        "helpfulness": -0.0325,
+        "correctness": 0.0,
+        "f1_score": 0.0,
+        "clarity": -0.065,
+        "precision": 0.0
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo usuário do iOS, eu quero que o layout da tela de perfil se ajuste corretamente ao girar o dispositivo para landscape, para que a tela não fique quebrada e eu possa visualizar as informações de forma estável.\n\n## Critérios de Aceitação\n### Orientação landscape\n- Dado que estou na tela de perfil no iOS\n- Quando giro o dispositivo para landscape\n- Então o layout da tela de perfil é exibido de forma estável, com elementos visíveis, alinhados e legíveis, sem sobreposição ou corte de conteúdo, e sem exigir rolagem horizontal desnecessária\n\n### Retorno a portrait\n- Dado que estou na tela de perfil no iOS\n- Quando giro o dispositivo de landscape para portrait\n- Então o layout retorna a uma configuração estável, com elementos organizados, legíveis e sem distorção, mantendo a usabilidade"
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo usuário, eu quero que a tela de perfil se ajuste corretamente ao girar o dispositivo para landscape, para que o layout não fique quebrado e eu possa usar a tela de perfil sem problemas.\n\n## Critérios de Aceitação\n### Comportamento ao rotação\n- Dado que estou na tela de perfil\n- Quando giro o dispositivo de portrait para landscape\n- Então o layout da tela de perfil deve ajustar-se sem que haja quebras de alinhamento, sobreposição de elementos ou clipping de textos\n- E os elementos chave (avatar, nome, bio, botões de ação) permanecem visíveis e organizados\n\n### Estabilidade\n- Dado que estou na tela de perfil\n- Quando giro o dispositivo para landscape\n- Então a aplicação não trava, não exibe tela preta e não apresenta falha de renderização"
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta gerada corresponde integralmente à ground truth: foco na tela de perfil no iOS, modo paisagem, critérios de aceitação (layout estável, elementos visíveis e alinhados, sem sobreposição, sem corte) e retorno estável ao portrait. Inclui também não rolagem horizontal desnecessária, o que é compatível com o objetivo. Não há informações incorretas ou ausentes.",
+        "clarity": "Organização: clara e lógica (User Story, Critérios de Aceitação, cenários). Linguagem: compreensível, porém mistura termos em inglês (landscape/portrait) com português, o que pode gerar leve ambiguidade. Ausência de Ambiguidade: os cenários Given-When-Then são explícitos, sem dúvidas críticas, embora faltem métricas mensuráveis. Concisão: razoável; evita jargões, mas repete estruturas de Dado/Quando/Então, gerando leve redundância. Média calculada pela média simples das quatro dimensões.",
+        "precision": "A resposta está alinhada com o problema: foca em comportamento em landscape/portrait no iOS, sem afirmações técnicas não verificáveis. Fornece critérios de aceitação claros (layout estável, elementos visíveis e alinhados, sem sobreposição ou rolagem horizontal) e mantém o foco na adaptação do layout, conforme a ground truth, apenas expandindo com formato de User Story/CR, o que não contradiz o objetivo."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta gerada alinha-se exatamente à ground truth: user story para tela de perfil em landscape, critérios de aceitação que o layout se adapte, mantendo visíveis e alinhados os elementos (avatar, nome, bio, botões) e sem sobreposição, além de incluir estabilidade de renderização. A redação usa termos equivalentes (rotacionar de portrait para landscape, sem quebras de alinhamento, clipping etc.). Pequena diferença é a menção explícita de iOS; o conteúdo permanece aplicável e completo para o cenário.",
+        "clarity": "Análise: Organização boa; o texto está dividido em seções claras (User Story, Critérios de Aceitação), porém mistura termos em inglês (landscape/portrait) com português, o que pode confundir. Não há falha estrutural, mas seria mais claro manter termos de orientação em um idioma único (ex.: paisagem). Linguagem compreensível, uso direto; conteúdos técnicos como 'clipping de textos' são adequados, mas poderiam ser descritos de forma simples. Ausência de ambiguidade: os cenários de rotação são bem descritos e as condições de aceitação são específicas; incluir iOS ajudaria contextualizar. Concisão: razoável, não redundante, porém poderia ser mais sucinta mantendo termos consistentes.",
+        "precision": "A resposta aborda exatamente o objetivo (tela de perfil em landscape) e propõe critérios de aceitação centrados em adaptação do layout, visibilidade dos elementos e ausência de sobreposição, além de estabilidade. Não introduz fatos não verificáveis nem afirmações técnicas específicas de APIs. Está em linha com a Ground Truth ao exigir que o layout se adapte e que os elementos permaneçam visíveis/alinhados; acrescenta uma dimensão prática de estabilidade que é razoável para iOS, sem desvio do tema."
+      }
+    },
+    {
+      "example_id": "108aeeaa-deda-4544-a9b6-375dd0d3f72d",
+      "inputs": {
+        "bug_report": "Pipeline de vendas calcula valor total errado quando há desconto.\n\nCenário:\n- Produto A: R$ 1.000\n- Produto B: R$ 500\n- Desconto: 10%\n- Valor esperado: R$ 1.350\n- Valor mostrado: R$ 1.400\n\nO sistema aplica desconto só no primeiro produto."
+      },
+      "scores_01": {
+        "helpfulness": 0.9125,
+        "correctness": 0.8734,
+        "f1_score": 0.7467,
+        "clarity": 0.825,
+        "precision": 1.0
+      },
+      "scores_09": {
+        "helpfulness": 0.925,
+        "correctness": 0.8104,
+        "f1_score": 0.6207,
+        "clarity": 0.85,
+        "precision": 1.0
+      },
+      "delta": {
+        "helpfulness": 0.0125,
+        "correctness": -0.063,
+        "f1_score": -0.126,
+        "clarity": 0.025,
+        "precision": 0.0
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo vendedor, eu quero que o pipeline de vendas aplique o desconto de forma correta ao total dos itens, para que o valor final reflita o desconto sobre a soma dos itens e não apenas sobre o primeiro item.\n\n## Critérios de Aceitação\n### Cenário de correção do cálculo de desconto\n- Dado que produto A tem preço R$ 1.000, produto B tem preço R$ 500 e há um desconto de 10% aplicado\n- Quando o total é calculado\n- Então o total exibido deve ser R$ 1.350\n- E o desconto de 10% deve ser aplicado à soma dos itens\n\n### Cenário de regressão (verificação do bug atual)\n- Dado que o mesmo cenário (A: R$ 1.000; B: R$ 500; Desconto: 10%)\n- Quando o cálculo é feito e o sistema aplica o desconto apenas ao primeiro item\n- Então o total exibido não deve ser R$ 1.400; o resultado esperado continua sendo R$ 1.350\n\n## Contexto Técnico\n- O relato evidencia que o desconto está sendo aplicado apenas ao primeiro item, resultando em R$ 1.400 (em vez de R$ 1.350) no exemplo fornecido.\n- A correção envolve aplicar o desconto à soma total dos itens, ou seja, totalItens × (1 - desconto).\n\n## Sugestões Técnicas a Validar\n- Garantir que o desconto percentual seja aplicado à soma de todos os itens do pedido, não a itens individuais.\n- Adicionar testes de integração/unitários cobrindo cenários com múltiplos itens e descontos percentuais.\n- Validar que o valor exibido na interface corresponde ao cálculo do total com o desconto aplicado à soma dos itens."
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo vendedor, eu quero que o pipeline de vendas aplique o desconto de 10% sobre o total da venda (somatório dos itens), para que o valor final reflita corretamente o desconto em todos os itens (ex.: venda com A = R$1.000 e B = R$500 deve retornar R$1.350).\n\n## Critérios de Aceitação\n- Dado que a venda contém os itens A (R$ 1.000) e B (R$ 500) e o desconto de 10%\n- Quando o pipeline processa a venda com desconto\n- Então o valor total exibido deve ser R$ 1.350\n- E o desconto deve ser aplicado ao total (somatório), não apenas ao primeiro item"
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta está alinhada ao objetivo da user story e corrige o bug ao aplicar o desconto na soma dos itens, incluindo o valor final correto (R$ 1.350) e a presença do cenário de regressão (R$ 1.400). No entanto, não apresenta explicitamente o detalhamento numérico pedido (Subtotals, Desconto e Total com valores específicos, como Subtotal 1.500 e Desconto 150), o que reduz o recall. Também não utiliza a fórmula completa de cálculo dentro do detalhamento.",
+        "clarity": "Avaliação: a resposta está bem organizada (User Story, Critérios, Contexto Técnico, Sugestões) e usa linguagem simples. A clareza é boa e não há ambiguidades graves; porém a segunda seção de cenário de regressão poderia ser mais direta, e a concisão poderia ser levemente melhor ao evitar redundâncias entre cenários. A média dos quatro critérios fica em 0.825.",
+        "precision": "A avaliação conclui que a resposta gerada está correta e direta ao ponto. Ela foca no problema: aplicar o desconto sobre a soma de todos os itens (A + B) em vez de apenas no primeiro, e apresenta o resultado esperado de 1350 para A=1000, B=500 com 10% de desconto, conforme ground truth. Menciona o bug atual (1.400) e propõe a correção (totalItens × (1 − desconto)). Inclui cenários de aceitação e sugestões técnicas, sem informações falsas ou extrapolações indevidas."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "Precisão: todas as informações apresentadas são corretas e relevantes (aplicar desconto no total, exemplo com A=1.000 e B=500, resultado 1.350, desconto sobre o total). Recall: o Ground Truth exige detalhamento (subtotal, desconto e total), fórmula explícita (soma dos produtos × (1 - desconto%)) e contexto técnico do bug; esse conteúdo não está presente na resposta, reduzindo o recall. Em resumo: correto e relevante, porém incompleto em termos de detalhamento exigido.",
+        "clarity": "Organização: boa, com seções claras (história do usuário e critérios de aceitação). Linguagem: direta e de fácil compreensão. Ausência de Ambiguidade: fica claro que a aplicação é no total da venda; o exemplo ajuda. Concisão: em geral é concisa, mas há duplicação de conteúdo ao incluir uma seção de referência, o que pode confundir. Observação adicional: a notação R$ 1.350 é compreensível para quem conhece o formato brasileiro, embora a formatação de moeda possa variar entre leitores.",
+        "precision": "A resposta não contém alucinações e está estritamente alinhada ao problema proposto: aplica o desconto ao total (somatório) e usa o exemplo A=1000, B=500 resultando em 1.350. O foco é direto na correção do cálculo de desconto sobre o total, sem digressões, e a afirmação factual (desconto de 10% sobre o total) está correta segundo o cenário."
+      }
+    },
+    {
+      "example_id": "50a04ddb-89bb-4f1f-aee0-58d520841b9c",
+      "inputs": {
+        "bug_report": "Relatório de vendas demora mais de 2 minutos para gerar quando filtro ultrapassa 1000 registros.\n\nDetalhes:\n- Query SQL está sem index na coluna data_venda\n- Timeout do navegador após 120 segundos\n- Usuários reclamando de lentidão no horário comercial"
+      },
+      "scores_01": {
+        "helpfulness": 0.83,
+        "correctness": 0.6977,
+        "f1_score": 0.5455,
+        "clarity": 0.81,
+        "precision": 0.85
+      },
+      "scores_09": {
+        "helpfulness": 0.88,
+        "correctness": 0.785,
+        "f1_score": 0.67,
+        "clarity": 0.86,
+        "precision": 0.9
+      },
+      "delta": {
+        "helpfulness": 0.05,
+        "correctness": 0.0873,
+        "f1_score": 0.1245,
+        "clarity": 0.05,
+        "precision": 0.05
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo usuário, eu quero que o relatório de vendas seja gerado rapidamente mesmo quando o filtro retorna mais de 1000 registros, para que eu possa obter os resultados sem atrasos ou timeout no navegador, especialmente durante o horário comercial.\n\n## Critérios de Aceitação\n### Cenário de Reprodução do Problema\n- Dado que o filtro de vendas retorna mais de 1000 registros\n- Quando gero o relatório\n- Então a geração não deve exceder 120 segundos e o navegador não deve apresentar timeout\n- E o relatório exibido deve refletir corretamente os dados filtrados\n\n### Cenário de Correção Esperada\n- Dado que a consulta está otimizada (por exemplo, com índice na coluna data_venda ou melhoria equivalente)\n- Quando gero o relatório com o mesmo filtro (>1000 registros)\n- Então o relatório é exibido em até 120 segundos\n- E o navegador não apresenta timeout\n- E os dados exibidos permanecem consistentes com o filtro aplicado\n\n## Contexto Técnico\n- Query SQL está sem índice na coluna data_venda\n- Timeout do navegador após 120 segundos\n- Usuários reclamando de lentidão no horário comercial\n\n## Sugestões Técnicas a Validar\n- Adicionar índice na coluna data_venda para acelerar filtros por data\n- Analisar e otimizar a query para uso efetivo do índice (evitar full table scan)\n- Considerar paginação, lazy loading ou streaming para grandes volumes de dados\n- Implementar cache ou pré-processamento de relatórios para cargas recorrentes\n- Ajustar timeouts de frontend/backend para mensagens claras de carregamento e falha\n- Monitorar tempos de resposta em produção com métricas observáveis (P95/P99) para o endpoint de geração de relatório"
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo usuário, eu quero gerar o relatório de vendas mesmo quando o filtro retorna mais de 1000 registros, para que eu obtenha o relatório sem travar o navegador e com feedback claro caso o processamento demore.\n\n## Critérios de Aceitação\n### Cenário 1: Geração dentro do tempo aceitável\n- Dado que o filtro de vendas retorna mais de 1000 registros\n- Quando o usuário solicita a geração do relatório\n- Então o relatório é gerado e disponibilizado para download sem travar o navegador, com tempo de resposta igual ou inferior a 120 segundos\n\n### Cenário 2: Geração que excede o tempo de 120 segundos (processamento assíncrono)\n- Dado que o filtro de vendas retorna mais de 1000 registros\n- Quando a geração do relatório não é concluída em 120 segundos\n- Então a interface não trava o navegador; exibe um indicador de processamento em segundo plano e informa que o relatório ficará disponível para download assim que estiver pronto, disponibilizando um link ou notificação de conclusão\n\n## Contexto Técnico\n- A query de relatório de vendas está sendo executada sem uso de índice na coluna data_venda\n- O navegador apresenta timeout após 120 segundos durante a geração do relatório\n- Usuários relatam lentidão especialmente no horário comercial\n\n## Sugestões Técnicas a Validar\n- Adicionar índice na coluna data_venda (ou revisar planos de índice existentes) para reduzir o tempo de execução de consultas com filtros por data\n- Analisar o plano de execução da query e aplicar otimizações (índices compostos, particionamento por data, filtros adicionais)\n- Implementar processamento assíncrono para geração de relatórios com fila/worker, evitando bloqueio da UI\n- Implementar carregamento progressivo ou streaming de resultados e/ou exportação em formato que suporte geração em partes\n- Adicionar feedback de progresso na UI (porcentagem, etapas) e um link de download assim que o relatório ficar pronto\n- Considerar caching de resultados para filtros com consultas repetidas, desde que adequado aos critérios de validade dos dados\n\n## Informações a confirmar\n- Qual é o formato de exportação esperado do relatório (CSV, PDF, outro)?\n- Existem filtros adicionais além de data que impactam a cardinalidade (ex.: regionais, representantes, canais de venda)?"
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "Correção: a resposta gera a ideia de gerar relatórios rapidamente e evita timeout, com contexto técnico relevante (índice, sugestões). Porém, o Ground Truth exige tempo alvo <30s; a resposta usa 120s, o que é incorreto. A menção de 120s aparece em reprodução e correção, divergindo do requisito. O item de desempenho em horários de pico não é explicitamente atendido nos critérios, embora o contexto mencione horário comercial. Sugestões técnicas são pertinentes (índice, paginação, caching). No conjunto, há acertos relevantes, mas falha no tempo-alvo e em alguns enquadramentos específicos.",
+        "clarity": "Organização: a resposta apresenta seções claras (User Story, Critérios de Aceitação, Contexto Técnico, Sugestões Técnicas). No entanto, há duplicação de informações em Contexto Técnico e repetição do problema, o que reduz concisão. Linguagem: simples, direta e acessível, sem jargões excessivos. Ausência de Ambiguidade: os cenários de reprodução e correção são bem definidos, com critérios de tempo (≤ 120 segundos) e comportamento do navegador. Concisão: conteúdo detalhado demais e com redundâncias, o que poderia ser condensado mantendo os mesmos requisitos. Overall: boa clareza, porém melhora na eliminação de duplicatas aumentaria a clareza.",
+        "precision": "Não há alucinações: o conteúdo é plausível e se baseia nos dados fornecidos (filtro >1000 registros, timeout do navegador, necessidade de índice). O foco está no tema de melhoria de desempenho e inclui sugestões técnicas compatíveis (índice em data_venda, otimização de query, paginação, cache). Correção factual: identifica corretamente a ausência de índice na data_venda e propõe medidas razoáveis; não há afirmações factualmente incorretas. Pontos de melhoria: a ground truth descreve um objetivo de desempenho <30 segundos, enquanto a resposta cita um limite de 120 segundos (timeout do navegador) como cenário desejado, o que difere do alvo apresentado na referência."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta captura o objetivo central de gerar rapidamente relatórios com grandes volumes, mas erra no papel (usa 'usuário' em vez de 'gerente de vendas') e adiciona detalhes de tempo/fluxo (120s, processamento assíncrono) não presentes no Ground Truth. Assim, 2 de 3 itens-chave estão corretos, gerando precision e recall de ~0.67.",
+        "clarity": "Organização: boa, com seções claras (User Story, Critérios, Contexto Técnico, Sugestões). Linguagem: simples e direta, sem jargões desnecessários. Ambiguidade: metas são claras (≤120s, processamento síncrono/assíncrono); poderia esclarecer se o filtro é estritamente >1000. Concisão: informativo e estruturado, porém relativamente detalhado; não há duplicação significativa, apenas detalhamento por seções. Em conjunto, a clareza é boa, com leve verbosidade para cobrir aspectos técnicos e de validação.",
+        "precision": "Ausência de alucinações: 1.0 — não há informações inventadas; tudo deriva das premissas do enunciado (tempo, índice, filtros). Foco na pergunta: 0.7 — a resposta aborda geração de relatório e melhorias de desempenho, incluindo processamento assíncrono; porém adota o limiar de 120 segundos em vez do requisito de <30 segundos presente na ground truth, o que reduz o alinhamento com o objetivo. Correção factual: 1.0 — sugestões técnicas são corretas (índice na data_venda, plano de execução, particionamento, filas, feedback de progresso, caching)."
+      }
+    },
+    {
+      "example_id": "b7fe26dd-f38d-4314-8856-ac51b89d8faa",
+      "inputs": {
+        "bug_report": "Sistema de checkout com múltiplas falhas críticas.\n\nPROBLEMAS IDENTIFICADOS:\n\n1. SEGURANÇA - XSS no campo de cupom:\n   - Input: <script>alert('xss')</script>\n   - Sistema executa o script\n   - Não há sanitização de entrada\n\n2. INTEGRAÇÃO - Gateway de pagamento retorna erro intermitente:\n   - POST /api/payment/process retorna 504 Gateway Timeout em 30% dos casos\n   - Clientes são cobrados mas pedido não é criado\n   - Logs: \"Connection pool exhausted\" no Postgres\n\n3. LÓGICA DE NEGÓCIO - Race condition em cupons de desconto:\n   - Cupom \"PROMO10\" (limite: 100 usos)\n   - Sistema permitiu 147 usos\n   - Verificação de limite não é atômica\n\n4. UX - Loading infinito após timeout:\n   - Se pagamento demora > 30s\n   - Tela fica com spinner eternamente\n   - Usuário não sabe se pagamento foi processado\n\nIMPACTO:\n- 150+ clientes afetados na última semana\n- Perda estimada: R$ 15.000 em cupons indevidos\n- 45 tickets de suporte abertos\n- Rating do app caiu de 4.5 para 3.2 estrelas"
+      },
+      "scores_01": {
+        "helpfulness": 0.78,
+        "correctness": 0.7023,
+        "f1_score": 0.5846,
+        "clarity": 0.74,
+        "precision": 0.82
+      },
+      "scores_09": {
+        "helpfulness": 0.85,
+        "correctness": 0.9145,
+        "f1_score": 0.9491,
+        "clarity": 0.82,
+        "precision": 0.88
+      },
+      "delta": {
+        "helpfulness": 0.07,
+        "correctness": 0.2122,
+        "f1_score": 0.3645,
+        "clarity": 0.08,
+        "precision": 0.06
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo cliente, eu quero um checkout seguro, estável e previsível, para que meus pagamentos sejam processados com sucesso, cupons sejam aplicados dentro de seus limites de forma justa e sem vulnerabilidades, e a interface forneça feedback claro durante o processamento e em casos de timeout, evitando cobranças indevidas, pedidos não criados e loading infinito.\n\n## Critérios de Aceitação\n### Segurança\n- Dado que insiro o cupom com conteúdo potencialmente malicioso, por exemplo \"<script>alert('xss')</script>\"\n- Quando valido o cupom no fluxo de checkout\n- Então o sistema não executa scripts; o cupom é sanitizado (entrada tratada como texto seguro) e somente valor seguro é processado, sem execução de código Pegasus, refletindo apenas o resultado legítimo do cupom.\n\n### Integração - Gateway de pagamento\n- Dado que POST /api/payment/process retorna 504 Gateway Timeout em 30% dos casos\n- Quando a falha ocorre\n- Então o pagamento não deve ser confirmado e o pedido não deve ser criado; a interface deve informar falha com opção de tentar novamente; o estado do checkout deve permanecer consistente para nova tentativa.\n\n### Lógica de Negócio - Race condition em cupons de desconto\n- Dado que o cupom \"PROMO10\" tem limite de uso, por exemplo 100 usos\n- Quando múltiplas tentativas de uso do cupom são submetidas concorrente e simultaneamente\n- Então apenas os primeiros 100 usos devem ser aceitos e as tentativas subsequentes devem ser rejeitadas com mensagem de cupom esgotado; a verificação de limite deve ocorrer de forma atômica dentro de uma transação.\n\n### UX - Loading infinito após timeout\n- Dado que o processamento de pagamento demora mais de 30 segundos\n- Quando o tempo de processamento excede 30 segundos\n- Então a tela não deve ficar com spinner infinito; deve exibir uma mensagem de timeout com opções de re-tentar ou cancelar; o status de pagamento deve ser claro (pendente/erro) e não deve deixar o usuário sem retorno sobre o estado real.\n\n## Contexto Técnico\n- Segurança: Campo de cupom não sanitizado permitindo XSS com entrada <script>alert('xss')</script>; sistema pode executar o script.\n- Integração: Gateway de pagamento retorna 504 Gateway Timeout em aproximadamente 30% das tentativas; clientes são cobrados, mas o pedido não é criado; logs indicam \"Connection pool exhausted\" no Postgres.\n- Lógica de negócio: Cupom de desconto pode sofrer race condition; cupom \"PROMO10\" com limite declarado de 100 usos permitiu 147 usos.\n- UX: Em casos de timeout, a tela pode permanecer com spinner eternamente, deixando o usuário sem confirmação sobre o processamento do pagamento.\n\n## Sugestões Técnicas a Validar\n- Segurança: implementar sanitização/escaping server-side para entradas de cupom; validar cupom sem refletir conteúdo inseguro; evitar retorno de conteúdo HTML não seguro.\n- Integração: tornar o processamento de pagamento idempotente; introduzir mecanismo de retries com backoff controlado; associar confirmação de pagamento apenas após sucesso real de cobrança e criação de pedido; registrar falhas para reconciliação.\n- Lógica de negócio: implementar atualização atômica do uso de cupons (lock/update em transação ou concorrência controlada) para garantir que o limite não seja ultrapassado; usar transações com isolamento adequado.\n- UX: implementar timeout handling com fallback explícito; exibir mensagens claras de status e opções de re-tentativa; assegurar que o estado do checkout não leve a duplicação de pagamentos ou pedidos."
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo cliente, eu quero um checkout seguro e estável, sem vulnerabilidades de segurança, falhas de integração de pagamento, race conditions em cupons e carregamento infinito após timeout, para que minhas compras possam ser concluídas com segurança, cobranças corretas, descontos justos e feedback claro durante o processamento.\n\n## Critérios de Aceitação\n### Segurança - XSS no campo de cupom\n- Dado que o campo de cupom recebe input contendo HTML/JS, por exemplo <script>alert('xss')</script>\n- Quando aplico o cupom durante o checkout\n- Então o script não é executado (entrada sanitizada/escapada) e o cupom é avaliado de acordo com as regras de negócio\n- E, se o cupom for válido, o desconto é aplicado; se inválido, é exibida mensagem de erro clara\n- E não é possível injetar código executável por meio do cupom\n\n### Integração - Gateway de pagamento intermitente\n- Dado que POST /api/payment/process retorna 504 Gateway Timeout em 30% das tentativas\n- Quando tento finalizar o checkout\n- Então a cobrança não deve ser concluída nem o pedido criado até confirmação de pagamento\n- E se houver cobrança indevida previamente efetuada, deve-se iniciar processo de reverse/refund\n- E o usuário recebe mensagem de erro clara e pode tentar novamente\n- E os logs devem registrar a falha de gateway\n\n### Integração - Sucesso de pagamento (fluxo positivo)\n- Dado que o gateway de pagamento retorna sucesso\n- Quando o processamento do pagamento é concluído\n- Então o pedido é criado e o usuário recebe confirmação de compra\n\n### Lógica de negócio - Race condition em cupons de desconto\n- Dado que o cupom PROMO10 tem limite de 100 usos\n- Quando várias transações tentam aplicar o cupom ao mesmo tempo\n- Então apenas até 100 usos são permitidos\n- E tentativas que excedem o limite devem ser rejeitadas com mensagem de cupom esgotado\n- E a verificação de uso deve ser atômica, garantindo consistência do estado do cupom entre as operações\n\n### UX - Loading infinito após timeout\n- Dado que o tempo de processamento do pagamento excede 30 segundos\n- Quando o carregamento permanece com spinner na tela\n- Então a interface deve exibir uma indicação clara de atraso e oferecer opção de re-tentativa\n- E o estado do pagamento deve permanecer visível como pendente/erro, não deixando o usuário preso em spinner infinito\n\n## Contexto Técnico\n- Segurança: Input do cupom pode conter código HTML/JS; atualmente o sistema executa o script devido à falta de sanitização de entrada.\n- Integração: Gateway de pagamento pode falhar com 504 Gateway Timeout em ~30% das tentativas; clientes são cobrados mas o pedido não é criado; logs indicam \"Connection pool exhausted\" no Postgres.\n- Lógica de negócio: Cupom \"PROMO10\" com limite declarado de 100 usos; sistema permitiu 147 usos; verificação de limite não é atômica.\n- UX: Em casos de timeout, pagamento que demora > 30s faz a tela ficar com spinner infinito, deixando o usuário sem clareza se o pagamento foi processado.\n\n## Sugestões Técnicas a Validar\n- Segurança: implementar sanitização/escape de input no backend para campos de cupom; validar e normalizar inputs de cupom antes da aplicação de descontos; impedir qualquer execução de código a partir de valores de entrada.\n- Pagamento e Ordem: tornar a persistência de pagamento e criação de pedido atômica (ou usar transação distribuída/fluxo de compensação); separar estado de pagamento do estado do pedido; suportar idempotência em endpoints de pagamento; quando falha, não concluir cobrança até confirmação de pedido; mecanismos de reprocessamento e reembolso automatizados.\n- Cupons: tornar a verificação de uso de cupom atômica (bloqueio/serialização ou transações com forte isolamento) para assegurar que o número de usos não exceda o limite; manter consistência do estado do cupom entre concorrentes.\n- UX de processamento: reduzir dependência de spinner infinito; implementar timeouts com mensagens explícitas e opções de re-tentativa; exibir status claro do processamento de pagamento (pendente, concluído, falha) e etapas subsequentes."
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "Avaliação: a resposta cobre grande parte dos critérios da Ground Truth (sanitização de cupom, processamento com retry/backoff, controle atômico de cupons, UX com timeout) mas falha em algumas exigências textuais exatas (as frases de status de pagamento, os textos específicos 'Processando pagamento, por favor aguarde...' e 'Estamos verificando seu pagamento', além de mencionar 30% de falhas e o tempo máximo de UI de 45s). Também introduz elementos não presentes (ex.: 'Pegasus').",
+        "clarity": "A resposta está bem organizada, com seções claras (User Story, Critérios, Contexto, Sugestões). A linguagem é direta em português e segue o formato Given-When-Then, facilitando a leitura. Há pouca ambiguidade nos critérios críticos, mas há redundâncias e um erro de digitação pontual ('código Pegasus') que podem confundir. A extensão é alta e menos concisa; poderia ser mais objetiva sem perder conteúdo essencial. Em resumo, organização e clareza são boas, porém a concisão e a eliminação de pequenos erros poderiam melhorar.",
+        "precision": "A resposta cobre os pontos-chave (sanitização de cupom, retry/backoff, controle atômico de cupons, UX com mensagens de timeout) e está alinhada com a ground truth. Contudo, há um uso estranho de 'Pegasus' que parece alucinação/inapropriado e falta menção explícita a alguns requisitos técnicos (CSP headers, 45s timeout, circuit breaker, idempotency keys, polling/webhook) detalhados na referência. Em suma, boa cobertura, porém com falhas de detalhamento e uma possível alucinação menor."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta cobre a maioria dos itens do Ground Truth: user story, critérios A-D, e os aspectos técnicos correlatos (sanitização, processamento com retry/backoff, controle atômico de cupons, UX de status). Alinha bem com as aceites (XSS, tempo de processamento, evitar cobranças duplicadas, criação de pedido, limite de cupons e mensagens de status). Observa-se inclusão de fluxo positivo de pagamento e sugestões técnicas. Pontos de melhoria: menciona reversão/refundo (não explicitamente no Ground Truth) e não destaca explicitamente CSP headers; algumas formulações diferem do texto original.",
+        "clarity": "Organização: clara, com seções distintas (User Story, Critérios, Técnico). Linguagem: direta em PT, com termos consistentes (Dado/Quando/Então). Ausência de Ambiguidade: cenários bem definidores, sem instruções conflitantes. Concisão: bastante completa, mas há alguma repetição entre seções que poderia ser mais enxuta. Média geral: 0.82, indicando boa clareza com espaço para reduzir redundâncias sem comprometer o conteúdo.",
+        "precision": "A resposta está amplamente alinhada com a Ground Truth: inclui User Story e critérios A-D cobrindo XSS, processamento com retry, controle atômico de cupons, UX de status e sugestões técnicas consistentes (sanitização, CSP, pool de Postgres, idempotência, webhooks). Não há alucinações óbvias. No entanto, há um desalinhamento factual: a Ground Truth especifica timeout máximo de 45s (com retries), enquanto a resposta usa 30s como limite de processamento aceito. Esse ponto afeta a Correção factual. No geral, mantém o foco no problema sem rodeios e aborda os componentes sugeridos."
+      }
+    },
+    {
+      "example_id": "40e38120-2d48-44b1-a770-dabc008d2dad",
+      "inputs": {
+        "bug_report": "Sistema de relatórios gerenciais com problemas severos de performance e dados incorretos.\n\nCONTEXTO:\nAplicação SaaS B2B com 500+ empresas clientes, cada uma com 50-5000 usuários.\n\nPROBLEMAS:\n\n1. PERFORMANCE - Query N+1 no dashboard executivo:\n   - Endpoint: GET /api/reports/executive-dashboard\n   - Para cada empresa, faz query separada para buscar métricas\n   - 1 cliente com 100 departamentos = 101 queries\n   - Tempo de resposta: 45 segundos (SLA: 3s)\n   - Database CPU: 95% em horário de pico\n\n   Stack trace:\n   ```\n   SELECT * FROM metrics WHERE company_id = ?  (executado 100x)\n   SELECT * FROM users WHERE company_id = ?     (executado 100x)\n   SELECT * FROM licenses WHERE company_id = ?  (executado 100x)\n   ```\n\n2. LÓGICA DE NEGÓCIO - Cálculo de MRR (Monthly Recurring Revenue) inconsistente:\n   - Dashboard mostra: R$ 150.000 MRR\n   - Relatório financeiro: R$ 145.000 MRR\n   - Planilha contábil: R$ 147.500 MRR\n\n   Causas identificadas:\n   - Dashboard: considera cancelamentos do mês anterior\n   - Relatório: só considera assinaturas ativas\n   - Contábil: considera pró-rata de upgrades/downgrades\n   - Nenhuma fonte está 100% correta\n\n3. CACHE - Cache Redis desatualizado causa dados old:\n   - TTL do cache: 24 horas\n   - Cliente faz upgrade de plano\n   - Dashboard ainda mostra plano antigo por até 24h\n   - Invalidação manual não funciona corretamente\n\n4. CONCORRÊNCIA - Exportação de CSV trava servidor:\n   - Exportar relatório anual (365 dias, 50k linhas)\n   - Process fica em 100% CPU por 5 minutos\n   - Outras requisições ficam lentas\n   - Memória cresce até 4GB (limite: 2GB) → OOM Kill\n\nIMPACTO BUSINESS:\n- 15 clientes enterprise ameaçando cancelar contrato\n- CEO não confia nos números para apresentar ao board\n- Time de CS gastando 40h/semana explicando discrepâncias\n- Impossível fazer forecasting confiável"
+      },
+      "scores_01": {
+        "helpfulness": 0.765,
+        "correctness": 0.8247,
+        "f1_score": 0.6794,
+        "clarity": 0.56,
+        "precision": 0.97
+      },
+      "scores_09": {
+        "helpfulness": 0.92,
+        "correctness": 0.9445,
+        "f1_score": 0.8889,
+        "clarity": 0.84,
+        "precision": 1.0
+      },
+      "delta": {
+        "helpfulness": 0.155,
+        "correctness": 0.1198,
+        "f1_score": 0.2095,
+        "clarity": 0.28,
+        "precision": 0.03
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo CEO de cliente enterprise, eu quero que os relatórios gerenciais sejam rápidos, precisos e consistentes entre o dashboard, o relatório financeiro e a planilha contábil, para que eu possa tomar decisões com confiança, apresentar números confiáveis ao board e reduzir o churn.\n\n## Critérios de Aceitação\n\n### Desempenho: Dashboard executivo\n- Dado que a API GET /api/reports/executive-dashboard é chamada para múltiplas empresas com várias estruturas (ex.: 1 cliente com 100 departamentos),\n- Quando o dashboard é carregado,\n- Então o tempo de resposta deve ser aceitável e não apresentar atraso significativo (SLA de uso típico), evitando o efeito N+1 citado (consultas repetidas por empresa) e retornando dados agregados de forma eficiente.\n\n### Consistência de LRR (MRR)\n- Dado que o sistema calcula MRR para o mesmo período nas três fontes (dashboard, relatório financeiro e planilha contábil),\n- Quando esses componentes exibem o MRR,\n- Então o valor exibido deve ser igual entre as fontes para o mesmo período, ou a UI deve sinalizar discrepâncias com uma explicação clara e uma opção de reconciliação/correção.\n\n### Atualização de cache (Redis)\n- Dado que há um upgrade/downgrade de plano de um cliente,\n- Quando o cache do dashboard é lido,\n- Então o valor exibido deve refletir o estado atual após a invalidação correspondente (ou próxima leitura com cache atualizado), não exibindo dados obsoletos por até o TTL de 24h, e a invalidação manual deve funcionar conforme esperado.\n\n### Exportação CSV: concorrência\n- Dado que o usuário solicita a exportação anual (365 dias, ~50.000 linhas),\n- Quando o processo de exportação é iniciado,\n- Então o servidor não deve ficar preso em 100% de CPU por longos períodos nem exceder limites de memória; a exportação deve ocorrer de forma streaming/paginada ou particionada, mantendo a responsividade de outras requisições e fornecendo feedback de progresso.\n\n## Contexto Técnico\n- PERFORMANCE: Query N+1 no dashboard executivo:\n  - Endpoint: GET /api/reports/executive-dashboard\n  - Para cada empresa, há queries separadas para metrics, users, licenses\n  - Exemplo observado: 1 cliente com 100 departamentos gera ~101 queries\n  - Tempo de resposta observado: 45 segundos (SLA informado: 3s)\n  - CPU do banco de dados em horário de pico: ~95%\n  - Exemplo de consultas: \n    - SELECT * FROM metrics WHERE company_id = ? (executado 100x)\n    - SELECT * FROM users WHERE company_id = ? (executado 100x)\n    - SELECT * FROM licenses WHERE company_id = ? (executado 100x)\n\n- LÓGICA DE NEGÓCIO: Cálculo de MRR inconsistente\n  - Dashboard mostra: 150.000 MRR\n  - Relatório financeiro: 145.000 MRR\n  - Planilha contábil: 147.500 MRR\n  - Causas identificadas (sem consenso único): \n    - Dashboard considera cancelamentos do mês anterior\n    - Relatório considera apenas assinaturas ativas\n    - Contábil considera pró-rata de upgrades/downgrades\n\n- CACHE: Cache Redis desatualizado\n  - TTL do cache: 24 horas\n  - Cenário: cliente realiza upgrade de plano; dashboard ainda reflete plano antigo por até 24h\n  - Invalidação manual não funciona adequadamente\n\n- CONCORRÊNCIA: Exportação de CSV trava o servidor\n  - Exportar relatório anual (365 dias, ~50k linhas)\n  - Process fica em 100% CPU por ~5 minutos\n  - Outras requisições tornam-se lentas\n  - Memória aumenta até ~4GB (> limite de 2GB) → OOM Kill\n\n## Impacto\n- 15 clientes enterprise ameaçando cancelar contrato\n- CEO não confia nos números para apresentar ao board\n- Time de CS gastando 40h/semana explicando discrepâncias\n- Impossível fazer forecasting confiável\n\n## Sugestões Técnicas a Validar\n- Implementar fonte única de verdade para MRR com regras de reconciliação explícitas entre dashboards, financeiro e contábil.\n- Refatorar endpoint /api/reports/executive-dashboard para eliminar N+1, adotando agregações/arquivos indexados ou caching de nível de empresa.\n- Habilitar invalidação de cache baseada em eventos (upgrade/downgrade, cancelamento) em vez de depender apenas do TTL.\n- Introduzir exportação de CSV em streaming/paginada com limites de memória, mantendo a habilidade de acompanhar progresso e cancelamento.\n- Validar saturação de recursos sob carga com testes de performance e cenários de concorrência, ajustando autoscaling ou TTL de cache conforme necessário.\n\n## Informações a confirmar\n- Quais são as regras exatas de cálculo de MRR para cada origem (dashboard, financeiro, contábil) que devem convergir?\n- Qual deve ser a definição de “fonte única de verdade” de MRR e como deve ser exposta/explicada na UI?\n- Quais dados precisam definitivamente compor o CSV export (colunas, formato, ordenação)?\n- Quais níveis de SLA de desempenho objetivo devem ser adotados para dashboards, relatórios e exportações?\n- Existem eventos de negócios que devem invalidar automaticamente o cache (ex.: upgrade/downgrade, cancelamento, reativação)?\n- Em termos de governança de dados, há regras de retenção, versão histórica ou auditoria que devem ser preservadas ao reconciliar números?"
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo usuário da plataforma de relatórios gerenciais, eu quero que o dashboard executivo seja rápido e confiável, com dados consistentes entre o dashboard, o relatório financeiro e a planilha contábil, para que a empresa tenha números confiáveis para apresentar ao board, reduzir churn de clientes e melhorar o forecasting.\n\n## Critérios de Aceitação\n\n### Desempenho do dashboard executivo\n- Dado que a requisição GET /api/reports/executive-dashboard é executada em uma base com 500+ empresas clientes e múltiplos níveis de organização (ex.: 1 cliente com 100 departamentos, conforme evidência do relato)\n- Quando o dashboard é carregado\n- Então o tempo de resposta deve ser ≤ 3 segundos (SLA informado)\n- E não devem ocorrer consultas N+1 por empresa; as métricas devem ser buscadas de forma agregada ou via consultas otimizadas\n- E o conjunto de dados retornado inclua métricas corretas para cada empresa, sem distorção ou omissions relevantes\n\n### Consistência de MRR entre fontes\n- Dado que o dashboard mostra R$ 150.000 de MRR, o relatório financeiro mostra R$ 145.000 e a planilha contábil mostra R$ 147.500\n- Quando as fontes de cálculo de MRR são processadas\n- Então deve haver uma regra única de cálculo de MRR aplicada de forma consistente em todas as fontes\n- E todas as fontes devem exibir o mesmo valor de MRR correspondente à regra acordada\n- E a regra de MRR, a fonte de verdade e o mecanismo de reconciliação entre fontes devem ficar documentados e disponíveis para validação\n\n### Validação de cache de planos (Redis)\n- Dado que o TTL do cache é 24 horas\n- E um cliente faz upgrade de plano\n- Quando o upgrade ocorre\n- Então o cache deve ser invalidado automaticamente ou atualizável de forma imediata para refletir o novo plano\n- E o dashboard deve exibir o plano atualizado sem depender da expiração de 24 horas\n- E a invalidação manual do cache deve funcionar corretamente, atualizando imediatamente os dados exibidos\n\n### Exportação de CSV de relatório (concurrency e custos)\n- Dado que a exportação de relatório anual exige 365 dias com ~50k linhas\n- Quando a exportação é iniciada\n- Então o processamento não deve consumir 100% da CPU por longos períodos nem bloquear outras requisições\n- E deve ser executado de forma escalável (por exemplo, processamento em chunks/streaming ou fila assíncrona)\n- E o consumo de memória não deve exceder o limiar seguro (preferencialmente ≤ 2 GB)\n- E o arquivo exportado deve ser gerado com precisão e disponibilizado para download sem falhas\n\n## Contexto Técnico\n- Desempenho: Endpoint GET /api/reports/executive-dashboard está gerando N+1 queries por empresa (ex.: para 1 cliente com 100 departamentos, 101 queries: metrics, users, licenses) com tempo de resposta observado de 45 segundos e CPU de banco de dados em ~95%.\n- Lógica de negócio: MRR apresentado em dashboards/relatórios diverge entre fontes (dashboard: 150k; financeiro: 145k; contábil: 147.5k) devido a regras distintas (cancelamentos do mês anterior, assinaturas ativas, pró-rata de upgrades/downgrades).\n- Cache: TTL de Redis de 24 horas; alterações de plano não refletem imediatamente no dashboard, levando a dados desatualizados até expirar o TTL; invalidação manual não funciona corretamente.\n- Concorrência: Exportação CSV de relatório anual com 365 dias/50k linhas consome 100% de CPU por ~5 minutos, provocando lentidão em outras requisições e aumento de memória até 4GB (limite anterior de 2GB), com risco de OOM Kill.\n\n## Sugestões Técnicas a Validar\n- Desempenho: Introduzir consulta agregada/união de métricas por empresa, evitar N+1; considerar uso de views/materialized views ou cache de dataset por empresa; aplicar monitoração de queries para evitar regressões.\n- MRR: Definir uma regra única de cálculo de MRR (fonte de verdade) e aplicar de forma consistente em todos os pontos (dashboard, financeiro, contábil); criar processo de reconciliação para detectar discrepâncias e emitir alertas.\n- Cache: Implementar invalidation events em mudanças de plano; assegurar propagação de alterações de plano para todas as telas que consomem dados de MRR; considerar cache-aside com atualização em tempo real em eventos relevantes.\n- Exportação: Implementar exportação assíncrona/por lotes com streaming ou chunks; limitar memória consumida por exportação; usar fila de trabalho e oferecer status/progresso; configurar limites de recursos e timeouts para evitar impacto no restante do sistema.\n\n## Impacto\n- 15 clientes enterprise ameaçam cancelar contrato\n- CEO não confia nos números para apresentar ao board\n- Time de CS gasta ~40h/semana explicando discrepâncias\n- Impossível realizar forecasting confiável\n\n## Informações a confirmar\n- Qual é a regra de cálculo de MRR que deve ser adotada como fonte única (dashboard, relatório financeiro ou planilha contábil)?\n- Quais critérios de validação de consistência entre fontes devem ser priorizados (ex.: quais discrepâncias são aceitáveis, quais não)?\n- Existem requisitos específicos de SLA para o dashboard além do informado (ex.: target de 3s sob determinada carga)?\n- Existem fontes de dados adicionais que também influenciam MRR que não foram mencionadas?\n- Quais eventos devem invalidar o cache de maneira imediata (ex.: upgrade/downgrade, cancelamento, reativação de assinatura)?"
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta alinha-se ao objetivo da ground truth ao enfatizar rapidez, precisão e consistência entre fontes, cobrindo usuário executivo, MRR, cache e exportação assíncrona. Inclui a user story, critérios de aceitação conceituais e sugestões técnicas. Contudo, falha em apresentar os valores numéricos exatos (ex.: <3s, CPU <70%, TTL 5min, notificações de conclusão) e detalhes de casos de uso/comportamentos específicos, reduzindo a completude necessária para 1.0 de recall.",
+        "clarity": "Organização: há seções claras, mas o texto é fragmentado e há duplicação (várias versões de user story e critérios), o que reduz a clareza. Linguagem: em geral direta em PT, sem jargões excessivos, porém trechos longos e trechos com código dificultam leitura rápida. Ambiguidade: existem lacunas reais (regras exatas de cálculo de MRR, definição de fonte única, critérios de reconciliação) e a seção 'informações a confirmar' não elimina dúvidas. Concisão: há redundância e repetição de conteúdo; o documento pode ser consolidado em uma única história com critérios mensuráveis e sem duplicação.",
+        "precision": "A resposta está alinhada com o Ground Truth: aborda desempenho (<3s), consistência de MRR entre fontes, invalidação de cache rápida e exportação assíncrona com streaming. Não há alucinações perceptíveis e as soluções propostas (joins, views, cache por eventos, processamento em background) refletem práticas técnicas adequadas ao cenário apresentado. Pequenas oportunidades de melhoria incluem detalhar regras exatas de reconciliação de MRR e formatos específicos do CSV, mas, no geral, é precisa e centrada no problema apresentado."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta gerada cobre 12 dos 15 itens de aceitação esperados (A=4/ B=2/ C=3/ D=3), ou seja recall ≈ 0.8. Todas as afirmações incluídas são corretas e alinhadas com o ground truth (ex.: tempo ≤3s, eliminação de N+1, MRR único e consistente, invalidação automática/upd imediata de cache, exportação assíncrona). Faltam: requisitos de CPU/10k usuários (A), atualização em 30 segundos e TTL de 5 minutos para métricas críticas (C), e limite de memória de 80% na exportação (D).",
+        "clarity": "Organização: excelente, com seções claras (User Story, Critérios, Técnicos, Contexto). Linguagem: direta e em PT simples, sem jargões desnecessários. Ausência de ambiguidade: metas específicas (ex.: <3s, CPU, consistência entre fontes, invalidação de cache) ajudam a evitar dúvidas. Concisão: boa, mas o texto é longo e inclui informações repetidas e seções adicionais (contexto do bug, sugestões técnicas) que reduzem a concisão. No conjunto, a clareza é alta, com uma média estimada ao redor de 0.84.",
+        "precision": "A resposta está completa, não apresenta alucinações perceptíveis, mantendo foco nos problemas descritos (N+1, MRR, cache, export) e alinha-se aos critérios da Ground Truth: tempo <3s, CPU <70%, MRR único, cache invalidation, export assíncrono. A única suposição é a regra única de MRR (assinaturas ativas + pró-rata), que está alinhada com as opções de padronização sugeridas, mas poderia exigir validação formal; fora isso, é factual e consistente com o contexto e as metas."
+      }
+    },
+    {
+      "example_id": "8cf981ba-f919-40e1-a0d3-8cdf18d7c472",
+      "inputs": {
+        "bug_report": "Webhook de pagamento aprovado não está sendo chamado.\n\nSteps to reproduce:\n1. Fazer pedido de R$ 100\n2. Pagar com cartão de crédito\n3. Pagamento é aprovado no gateway\n4. Sistema não recebe notificação\n5. Status do pedido fica como \"pendente\"\n\nLogs do gateway mostram: HTTP 500 ao tentar POST /api/webhooks/payment"
+      },
+      "scores_01": {
+        "helpfulness": 0.825,
+        "correctness": 0.7833,
+        "f1_score": 0.6667,
+        "clarity": 0.75,
+        "precision": 0.9
+      },
+      "scores_09": {
+        "helpfulness": 0.66,
+        "correctness": 0.41,
+        "f1_score": 0.25,
+        "clarity": 0.75,
+        "precision": 0.57
+      },
+      "delta": {
+        "helpfulness": -0.165,
+        "correctness": -0.3733,
+        "f1_score": -0.4167,
+        "clarity": 0.0,
+        "precision": -0.33
+      },
+      "outputs_01": {
+        "answer": "## User Story\nComo Sistema de Pedidos, eu quero que o webhook de pagamento aprovado seja chamado corretamente após a aprovação do gateway, para que o pedido seja atualizado do status pendente para refletir que o pagamento foi aprovado e o fluxo de processamento avance.\n\n## Critérios de Aceitação\n### Fluxo de sucesso\n- Dado que existe um pedido de R$100 criado e pagamento com cartão de crédito foi aprovado pelo gateway\n- Quando o webhook de pagamento aprovado é enviado pelo gateway e o POST /api/webhooks/payment é processado com sucesso (200)\n- Então o webhook é considerado recebido com sucesso\n- E o status do pedido é atualizado para refletir que o pagamento foi aprovado\n- E o processamento do pedido avança para o próximo estágio do fluxo de pedido (em curto/mediano prazo)\n\n### Tratamento de falha de webhook (HTTP 500)\n- Dado que o gateway envia o webhook de pagamento aprovado e o POST /api/webhooks/payment retorna HTTP 500\n- Quando isso ocorre\n- Então o sistema registra a falha do webhook e mantém o pedido com status pendente\n- E o sistema agenda/reenvia a tentativa de envio do webhook (retry) até obter sucesso\n- E, após a reprocessação bem-sucedida, o status do pedido é atualizado para refletir que o pagamento foi aprovado\n\n## Contexto Técnico\n- Logs do gateway mostram HTTP 500 ao tentar POST /api/webhooks/payment\n- O pedido permanece em pendente enquanto o webhook não é processado com sucesso\n\n## Sugestões Técnicas a Validar\n- Garantir idempotência ao processar webhooks para evitar duplicidade de atualização de pedido\n- Validar assinatura/autenticidade do webhook recebido\n- Implementar retry com backoff (limite de tentativas e intervalo entre retries)\n- Garantir que a atualização do pedido ocorra apenas após confirmação bem-sucedida do webhook\n- Melhorar observabilidade: correlação entre pedido, webhook e gateway (trace-id, logs ricos)\n\n## Informações a confirmar\n- Qual é o formato exato do payload do webhook e quais campos são usados para atualizar o pedido?\n- Qual é o estado/valor exato do status do pedido que representa “pagamento aprovado” na prática?\n- Qual é a política de retries existente (intervalos, máximo de tentativas) e onde o retry deve ser enfileirado?\n- O endpoint /api/webhooks/payment requer autenticação/assinatura específica; quais são os mecanismos esperados?"
+      },
+      "outputs_09": {
+        "answer": "## User Story\nComo sistema de integração de pagamentos, eu quero que o webhook de pagamento aprovado seja chamado e processado pelo backend assim que o gateway aprova o pagamento, para que o status do pedido seja atualizado de pendente para pago e o fluxo de pagamento seja concluído sem intervenção manual.\n\n## Critérios de Aceitação\n### Cenário: processamento bem-sucedido do webhook\n- Dado que o pagamento foi aprovado pelo gateway\n- Quando o gateway envia POST /api/webhooks/payment com o payload de pagamento aprovado\n- Então o endpoint processa o webhook com sucesso e retorna HTTP 200\n- E o pedido correspondente tem o status atualizado de \"pendente\" para \"pago\"\n- E o processamento do webhook é idempotente, de modo que reenviados não causem alterações duplicadas\n\n### Cenário: falha no processamento do webhook (convite a retry)\n- Dado que o gateway enviou o webhook com pagamento aprovado e o processamento falhou (por exemplo, HTTP 500)\n- Quando o erro é retornado pelo endpoint\n- Então o pedido permanece com o status \"pendente\"\n- E o sistema registra o erro e aplica a política de retry/configuração de reprocessamento do webhook\n- E, se houver reenviou do webhook, o processamento permanece idempotente\n\n## Contexto Técnico\n- Observação: Logs do gateway indicam HTTP 500 ao tentar POST /api/webhooks/payment\n- Impacto: o pedido permanece com status pendente até que o webhook seja processado com sucesso\n\n## Sugestões Técnicas a Validar\n- Garantir idempotência no processamento de webhooks para evitar alterações duplicadas em envios repetidos\n- Verificar assinatura/autenticação do webhook para impedir recebimento de notificações não autorizadas\n- Confirmar que o endpoint retorna 2xx apenas após o processamento bem-sucedido\n- Definir/validar a política de retries do gateway para chamadas de webhook (intervalos, limites, backoff)\n- Melhorar observabilidade: logs detalhados do recebimento, mapeamento entre payload do webhook e pedido, métricas de sucesso/erro por endpoint\n\n## Informações a confirmar\n- Campo(es) do payload que identificam o pedido e o pagamento (ex.: id do pedido, id de pagamento, valor)\n- Status exato usado pelo sistema para indicar pagamento confirmado/completo (pago, pago, aprovado)"
+      },
+      "comments_01": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta aborda o objetivo da user story e inclui critérios de aceitação para sucesso (200, atualização de status) e tratamento de falha (HTTP 500, retries). Contudo, falha em mencionar explicitamente o envio de e-mail ao cliente e o log de auditoria como parte dos critérios. Também não detalha claramente a transição de estado de 'pendente' para 'aprovado', limitando-se a 'atualizado para refletir que o pagamento foi aprovado'. Há sugestões técnicas úteis que fortalecem a implementação.",
+        "clarity": "Organização: seçãoalizada e lógica, porém pode ser mais enxuta para evitar redundâncias. Linguagem: direta e compreensível. Ambiguidade: útil, mas ainda aponta dúvidas sobre payload exato, estados de pedido e política de retry. Concisão: relativamente detalhada; poderia ser mais objetiva para facilitar ação. Em conjunto, a clareza é boa, mas reduzir escopo técnico excessivo e esclarecer pontos de dados necessários ao processamento do webhook.",
+        "precision": "A resposta não apresenta alucinações e aborda os cenários de sucesso (POST 200) e falha (HTTP 500) com retry, alinhando-se ao objetivo de webhook de pagamento. Inclui práticas técnicas apropriadas (idempotência, validação de assinatura, backoff/retries, observabilidade). Cita o endpoint /api/webhooks/payment e a transição pendente → aprovado. Falha: não menciona explicitamente o envio de e-mail ao cliente e o registro de auditoria, o que é uma lacuna. Em geral, o comportamento factual é adequado; não há afirmações claramente falsas."
+      },
+      "comments_09": {
+        "helpfulness": "Média entre Clarity e Precision",
+        "correctness": "Média entre F1-Score e Precision",
+        "f1_score": "A resposta correta inclui apenas o item de sucesso (HTTP 200). Ela erra ao mencionar a transição de status (pendente → pago em vez de 'aprovado'), não aborda explicitamente o envio de email ao cliente nem a logística de auditoria, e adiciona conteúdo não presente na ground truth (idempotência, retries). O contexto de falha HTTP 500 é citado, mas não compensa as falhas nas demais regras.",
+        "clarity": "A organização é boa: seções claras (User Story, Critérios, Contexto, Sugestões, Informações a confirmar). A linguagem é direta em PT-BR, com termos técnicos adequados. No entanto, há ambiguidade potencial em termos de estados (pendente/pago/aprovado) e a relação entre o esperado e a falha (HTTP 500) poderia ser mais explícita. A resposta é relativamente longa; poderia ser mais concisa sem perder informações essenciais. Em resumo, clareza boa, com pequenas oportunidades de simplificação e alinhamento de termos.",
+        "precision": "A resposta é parcialmente relevante ao tema de webhooks, mas diverge do ground truth. Divergências-chave: usa o status final 'pago' em vez de 'aprovado' e não menciona envio de email ao cliente nem logs para auditoria. Adiciona cenários de retry e idempotência, que não eram estritamente solicitados. Embora trate de sucesso/falha no processamento e HTTP 200, a inconsistência de status e a omissão de notificações/auditoria reduzem a precisão em relação à referência. Em resumo, contém alocação útil, porém não está alinhada integralmente com o cenário esperado. "
+      }
+    }
+  ]
+}
